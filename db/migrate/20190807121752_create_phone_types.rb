@@ -1,7 +1,7 @@
 class CreatePhoneTypes < ActiveRecord::Migration[5.2]
   def change
     create_table :phone_types do |t|
-      t.string :name
+      t.string :phone_type
 
       t.timestamps
     end

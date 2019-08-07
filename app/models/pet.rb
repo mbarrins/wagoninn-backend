@@ -10,4 +10,5 @@ class Pet < ApplicationRecord
   has_many :pet_medications
   has_many :pet_sociabilities
   has_many :pet_concerns
+
 end
