@@ -1,0 +1,2 @@
+class Sociability < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+class Immunisation < ApplicationRecord
+end

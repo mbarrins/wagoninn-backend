@@ -1,0 +1,2 @@
+class SpecialNeed < ApplicationRecord
+end
