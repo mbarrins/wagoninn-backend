@@ -19,6 +19,12 @@ gem 'bcrypt', '~> 3.1.7'
 #Add serializers
 gem 'active_model_serializers'
 
+#Add JWT
+gem "jwt"
+
+#Security confirguration for ENV
+gem 'figaro'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
