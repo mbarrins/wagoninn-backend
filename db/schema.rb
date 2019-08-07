@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   end
 
   create_table "cares", force: :cascade do |t|
-    t.string "name"
+    t.string "care"
     t.boolean "alert"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   end
 
   create_table "concerns", force: :cascade do |t|
-    t.string "name"
+    t.string "concern"
     t.boolean "alert"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   end
 
   create_table "health_details", force: :cascade do |t|
-    t.string "name"
+    t.string "health_detail"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -192,8 +192,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   end
 
   create_table "immunisations", force: :cascade do |t|
-    t.string "code"
-    t.string "name"
+    t.string "immunisation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -378,7 +377,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   end
 
   create_table "schedules", force: :cascade do |t|
-    t.string "name"
+    t.string "schedule"
     t.string "fee"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -397,14 +396,14 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   end
 
   create_table "sociabilities", force: :cascade do |t|
-    t.string "name"
+    t.string "sociability"
     t.boolean "alert"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "special_needs", force: :cascade do |t|
-    t.string "name"
+    t.string "special_need"
     t.string "action_needed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
