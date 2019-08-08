@@ -14,7 +14,6 @@ class Api::V1::LookupsController < ApplicationController
       dose: Dose.all,
       food: Food.all,
       measure: Measure.all,
-      personType: PersonType.all,
       phoneType: PhoneType.all,
       roomType: RoomType.all,
       bookingStatus: BookingStatus.all,
