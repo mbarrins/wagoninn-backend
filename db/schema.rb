@@ -15,21 +15,6 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "addresses", force: :cascade do |t|
-    t.bigint "household_id"
-    t.string "line_1"
-    t.string "line_2"
-    t.string "line_3"
-    t.string "city"
-    t.string "state"
-    t.string "zip"
-    t.date "effective_from"
-    t.date "effective_to"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["household_id"], name: "index_addresses_on_household_id"
-  end
-
   create_table "booking_pen_pet_medications", force: :cascade do |t|
     t.bigint "booking_pen_pet_id"
     t.bigint "medication_id"
@@ -83,7 +68,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
 
   create_table "bookings", force: :cascade do |t|
     t.string "booking_ref"
-    t.bigint "household_id"
+    t.bigint "owner_id"
     t.date "check_in"
     t.string "check_in_time"
     t.date "check_out"
@@ -92,7 +77,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["booking_status_id"], name: "index_bookings_on_booking_status_id"
-    t.index ["household_id"], name: "index_bookings_on_household_id"
+    t.index ["owner_id"], name: "index_bookings_on_owner_id"
   end
 
   create_table "breeds", force: :cascade do |t|
@@ -125,56 +110,6 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
     t.string "name"
   end
 
-  create_table "household_concerns", force: :cascade do |t|
-    t.bigint "household_id"
-    t.bigint "concerns_id"
-    t.boolean "inactive"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["concerns_id"], name: "index_household_concerns_on_concerns_id"
-    t.index ["household_id"], name: "index_household_concerns_on_household_id"
-  end
-
-  create_table "household_pen_pets", force: :cascade do |t|
-    t.bigint "household_pen_id"
-    t.bigint "pet_id"
-    t.bigint "rate_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["household_pen_id"], name: "index_household_pen_pets_on_household_pen_id"
-    t.index ["pet_id"], name: "index_household_pen_pets_on_pet_id"
-    t.index ["rate_id"], name: "index_household_pen_pets_on_rate_id"
-  end
-
-  create_table "household_pens", force: :cascade do |t|
-    t.bigint "household_id"
-    t.bigint "pen_type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["household_id"], name: "index_household_pens_on_household_id"
-    t.index ["pen_type_id"], name: "index_household_pens_on_pen_type_id"
-  end
-
-  create_table "household_people", force: :cascade do |t|
-    t.bigint "household_id"
-    t.bigint "person_id"
-    t.bigint "person_type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["household_id"], name: "index_household_people_on_household_id"
-    t.index ["person_id"], name: "index_household_people_on_person_id"
-    t.index ["person_type_id"], name: "index_household_people_on_person_type_id"
-  end
-
-  create_table "households", force: :cascade do |t|
-    t.boolean "agreed_terms"
-    t.string "agreed_person_id"
-    t.date "agreed_date"
-    t.text "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "immunisations", force: :cascade do |t|
     t.bigint "pet_type_id"
     t.string "name"
@@ -199,6 +134,63 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
     t.string "name"
   end
 
+  create_table "owner_concerns", force: :cascade do |t|
+    t.bigint "owner_id"
+    t.bigint "concerns_id"
+    t.boolean "inactive"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["concerns_id"], name: "index_owner_concerns_on_concerns_id"
+    t.index ["owner_id"], name: "index_owner_concerns_on_owner_id"
+  end
+
+  create_table "owner_pen_pets", force: :cascade do |t|
+    t.bigint "owner_pen_id"
+    t.bigint "pet_id"
+    t.bigint "rate_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_pen_id"], name: "index_owner_pen_pets_on_owner_pen_id"
+    t.index ["pet_id"], name: "index_owner_pen_pets_on_pet_id"
+    t.index ["rate_id"], name: "index_owner_pen_pets_on_rate_id"
+  end
+
+  create_table "owner_pens", force: :cascade do |t|
+    t.bigint "owner_id"
+    t.bigint "pen_type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_owner_pens_on_owner_id"
+    t.index ["pen_type_id"], name: "index_owner_pens_on_pen_type_id"
+  end
+
+  create_table "owners", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "primary_phone"
+    t.bigint "primary_phone_type_id"
+    t.string "secondary_phone"
+    t.bigint "secondary_phone_type_id"
+    t.string "address_line_1"
+    t.string "address_line_2"
+    t.string "address_line_3"
+    t.string "city"
+    t.string "state"
+    t.string "zipcode"
+    t.string "emergency_contact_name"
+    t.string "emergency_contact_phone"
+    t.string "partner_name"
+    t.string "partner_phone"
+    t.boolean "agreed_terms"
+    t.date "agreed_date"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["primary_phone_type_id"], name: "index_owners_on_primary_phone_type_id"
+    t.index ["secondary_phone_type_id"], name: "index_owners_on_secondary_phone_type_id"
+  end
+
   create_table "pen_types", force: :cascade do |t|
     t.bigint "pet_type_id"
     t.string "name"
@@ -211,19 +203,6 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["room_type_id"], name: "index_pens_on_room_type_id"
-  end
-
-  create_table "people", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.string "job"
-    t.string "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "person_types", force: :cascade do |t|
-    t.string "name"
   end
 
   create_table "pet_foods", force: :cascade do |t|
@@ -316,6 +295,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   end
 
   create_table "pets", force: :cascade do |t|
+    t.bigint "owner_id"
     t.bigint "pet_type_id"
     t.string "name"
     t.date "dob"
@@ -332,6 +312,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
     t.datetime "updated_at", null: false
     t.index ["breed_id"], name: "index_pets_on_breed_id"
     t.index ["color_id"], name: "index_pets_on_color_id"
+    t.index ["owner_id"], name: "index_pets_on_owner_id"
     t.index ["pet_type_id"], name: "index_pets_on_pet_type_id"
     t.index ["sex_id"], name: "index_pets_on_sex_id"
     t.index ["size_id"], name: "index_pets_on_size_id"
@@ -339,19 +320,6 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
 
   create_table "phone_types", force: :cascade do |t|
     t.string "name"
-  end
-
-  create_table "phones", force: :cascade do |t|
-    t.bigint "phone_type_id"
-    t.bigint "person_id"
-    t.string "number"
-    t.string "extension"
-    t.date "effective_from"
-    t.date "effective_to"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["person_id"], name: "index_phones_on_person_id"
-    t.index ["phone_type_id"], name: "index_phones_on_phone_type_id"
   end
 
   create_table "rates", force: :cascade do |t|
@@ -425,7 +393,6 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
     t.string "name"
   end
 
-  add_foreign_key "addresses", "households"
   add_foreign_key "booking_pen_pet_medications", "booking_pen_pets"
   add_foreign_key "booking_pen_pet_medications", "doses"
   add_foreign_key "booking_pen_pet_medications", "medications"
@@ -439,18 +406,17 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   add_foreign_key "booking_pens", "pen_types"
   add_foreign_key "booking_pens", "pens"
   add_foreign_key "bookings", "booking_statuses"
-  add_foreign_key "bookings", "households"
-  add_foreign_key "household_concerns", "concerns", column: "concerns_id"
-  add_foreign_key "household_concerns", "households"
-  add_foreign_key "household_pen_pets", "household_pens"
-  add_foreign_key "household_pen_pets", "pets"
-  add_foreign_key "household_pen_pets", "rates"
-  add_foreign_key "household_pens", "households"
-  add_foreign_key "household_pens", "pen_types"
-  add_foreign_key "household_people", "households"
-  add_foreign_key "household_people", "people"
-  add_foreign_key "household_people", "person_types"
+  add_foreign_key "bookings", "owners"
   add_foreign_key "immunisations", "pet_types"
+  add_foreign_key "owner_concerns", "concerns", column: "concerns_id"
+  add_foreign_key "owner_concerns", "owners"
+  add_foreign_key "owner_pen_pets", "owner_pens"
+  add_foreign_key "owner_pen_pets", "pets"
+  add_foreign_key "owner_pen_pets", "rates"
+  add_foreign_key "owner_pens", "owners"
+  add_foreign_key "owner_pens", "pen_types"
+  add_foreign_key "owners", "phone_types", column: "primary_phone_type_id"
+  add_foreign_key "owners", "phone_types", column: "secondary_phone_type_id"
   add_foreign_key "pen_types", "pet_types"
   add_foreign_key "pens", "room_types"
   add_foreign_key "pet_foods", "foods"
@@ -474,11 +440,10 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   add_foreign_key "pet_special_needs", "special_needs"
   add_foreign_key "pets", "breeds"
   add_foreign_key "pets", "colors"
+  add_foreign_key "pets", "owners"
   add_foreign_key "pets", "pet_types"
   add_foreign_key "pets", "sexes"
   add_foreign_key "pets", "sizes"
-  add_foreign_key "phones", "people"
-  add_foreign_key "phones", "phone_types"
   add_foreign_key "rates", "pet_types"
   add_foreign_key "users", "user_types"
 end

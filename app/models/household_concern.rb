@@ -1,4 +1,4 @@
-class HouseholdConcern < ApplicationRecord
-  belongs_to :household
+class OwnerConcern < ApplicationRecord
+  belongs_to :owner
   belongs_to :concerns
 end

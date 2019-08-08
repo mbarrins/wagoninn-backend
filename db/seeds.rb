@@ -56,7 +56,6 @@ immunisation = [
   {pet_type: PetType.find_by(name: 'Cat'), name: 'Rabies'}
 ]
 immunisation.each{|imm| Immunisation.find_or_create_by(imm)}
-# Pet type per immunisation? How to define required ones? Hard code?
 
 validities = [{code: 1, name: '1 year'}, {code: 3, name: '3 years'}]
 validities.each{|validity| Validity.find_or_create_by(validity)}
@@ -85,9 +84,6 @@ foods.each{|food| Food.find_or_create_by(name: food)}
 
 measures = ['Cup', 'Scoop', 'Can']
 measures.each{|measure| Measure.find_or_create_by(name: measure)}
-
-person_types = ['Owner', 'Emergeny Contact']
-person_types.each{|type| PersonType.find_or_create_by(name: type)}
 
 phone_types = ['Home', 'Cell', 'Work']
 phone_types.each{|type| PhoneType.find_or_create_by(name: type)}
