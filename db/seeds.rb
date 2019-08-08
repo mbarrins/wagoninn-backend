@@ -58,7 +58,7 @@ immunisation = [
 immunisation.each{|imm| Immunisation.find_or_create_by(imm)}
 # Pet type per immunisation? How to define required ones? Hard code?
 
-validities = [{code: 1, duration: '1 year'}, {code: 3, duration: '3 years'}]
+validities = [{code: 1, name: '1 year'}, {code: 3, name: '3 years'}]
 validities.each{|validity| Validity.find_or_create_by(validity)}
 
 health_details = ['Heart problems', 'Blind', 'Deaf', 'Three lega']

@@ -422,7 +422,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
 
   create_table "validities", force: :cascade do |t|
     t.integer "code"
-    t.string "duration"
+    t.string "name"
   end
 
   add_foreign_key "addresses", "households"
