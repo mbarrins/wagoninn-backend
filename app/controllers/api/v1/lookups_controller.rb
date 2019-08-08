@@ -11,20 +11,20 @@ class Api::V1::LookupsController < ApplicationController
       immunisations: Immunisation.api_info,
       healthDetails: HealthDetail.all,
       medications: Medication.all,
-      dose: Dose.all,
-      food: Food.all,
-      measure: Measure.all,
-      phoneType: PhoneType.all,
-      roomType: RoomType.all,
-      bookingStatus: BookingStatus.all,
+      doses: Dose.all,
+      foods: Food.all,
+      measures: Measure.all,
+      phoneTypes: PhoneType.all,
+      roomTypes: RoomType.all,
+      bookingStatuses: BookingStatus.all,
       validity: Validity.all,
       specialNeeds: SpecialNeed.api_info,
-      sociability: Sociability.api_info,
-      schedule: Schedule.api_info,
+      sociabilities: Sociability.api_info,
+      schedules: Schedule.api_info,
       issues: Issue.api_info,
       concerns: Concern.api_info,
-      penType: PenType.all
-
-    }}
+      penTypes: PenType.all
+      }
+    }
   end
 end
