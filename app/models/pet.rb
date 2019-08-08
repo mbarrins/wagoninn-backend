@@ -11,9 +11,9 @@ class Pet < ApplicationRecord
   has_many :pet_sociabilities
   has_many :pet_issues
 
-  delegate :color, :to => :color
-  delegate :size, :to => :size
-  delegate :breed, :to => :breed
-  delegate :animal, :to => :pet_type
-  delegate :sex, :to => :sex
+  # delegate :color, :to => :color
+  # delegate :size, :to => :size
+  # delegate :breed, :to => :breed
+  # delegate :animal, :to => :pet_type
+  # delegate :sex, :to => :sex
 end

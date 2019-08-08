@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   end
 
   create_table "booking_statuses", force: :cascade do |t|
-    t.string "status"
+    t.string "name"
   end
 
   create_table "bookings", force: :cascade do |t|
@@ -96,33 +96,33 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   end
 
   create_table "breeds", force: :cascade do |t|
-    t.string "breed"
+    t.string "name"
     t.boolean "banned"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "colors", force: :cascade do |t|
-    t.string "color"
+    t.string "name"
   end
 
   create_table "concerns", force: :cascade do |t|
-    t.string "concern"
+    t.string "name"
     t.boolean "alert"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "doses", force: :cascade do |t|
-    t.string "dose"
+    t.string "name"
   end
 
   create_table "foods", force: :cascade do |t|
-    t.string "food"
+    t.string "name"
   end
 
   create_table "health_details", force: :cascade do |t|
-    t.string "health_detail"
+    t.string "name"
   end
 
   create_table "household_concerns", force: :cascade do |t|
@@ -176,27 +176,32 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   end
 
   create_table "immunisations", force: :cascade do |t|
-    t.string "immunisation"
+    t.bigint "pet_type_id"
+    t.string "name"
+    t.boolean "current", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pet_type_id"], name: "index_immunisations_on_pet_type_id"
   end
 
   create_table "issues", force: :cascade do |t|
-    t.string "issue"
+    t.string "name"
     t.boolean "alert"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "measures", force: :cascade do |t|
-    t.string "measure"
+    t.string "name"
   end
 
   create_table "medications", force: :cascade do |t|
-    t.string "medication"
+    t.string "name"
   end
 
   create_table "pen_types", force: :cascade do |t|
     t.bigint "pet_type_id"
-    t.string "pen_type"
+    t.string "name"
     t.index ["pet_type_id"], name: "index_pen_types_on_pet_type_id"
   end
 
@@ -218,7 +223,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   end
 
   create_table "person_types", force: :cascade do |t|
-    t.string "person_type"
+    t.string "name"
   end
 
   create_table "pet_foods", force: :cascade do |t|
@@ -307,7 +312,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   end
 
   create_table "pet_types", force: :cascade do |t|
-    t.string "animal"
+    t.string "name"
   end
 
   create_table "pets", force: :cascade do |t|
@@ -333,7 +338,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   end
 
   create_table "phone_types", force: :cascade do |t|
-    t.string "phone_type"
+    t.string "name"
   end
 
   create_table "phones", force: :cascade do |t|
@@ -362,33 +367,33 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   end
 
   create_table "room_types", force: :cascade do |t|
-    t.string "room_type"
+    t.string "name"
   end
 
   create_table "schedules", force: :cascade do |t|
-    t.string "schedule"
+    t.string "name"
     t.string "fee"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "sexes", force: :cascade do |t|
-    t.string "sex"
+    t.string "name"
   end
 
   create_table "sizes", force: :cascade do |t|
-    t.string "size"
+    t.string "name"
   end
 
   create_table "sociabilities", force: :cascade do |t|
-    t.string "sociability"
+    t.string "name"
     t.boolean "alert"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "special_needs", force: :cascade do |t|
-    t.string "special_need"
+    t.string "name"
     t.string "action_needed"
     t.boolean "current", default: true
     t.datetime "created_at", null: false
@@ -445,6 +450,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_085747) do
   add_foreign_key "household_people", "households"
   add_foreign_key "household_people", "people"
   add_foreign_key "household_people", "person_types"
+  add_foreign_key "immunisations", "pet_types"
   add_foreign_key "pen_types", "pet_types"
   add_foreign_key "pens", "room_types"
   add_foreign_key "pet_foods", "foods"

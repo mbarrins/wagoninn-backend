@@ -4,6 +4,6 @@ class PetMedication < ApplicationRecord
   belongs_to :dose
   belongs_to :schedule
 
-  delegate :dose, :to => :dose
-  delegate :medication, :to => :medications
+  # delegate :dose, :to => :dose
+  # delegate :medication, :to => :medications
 end

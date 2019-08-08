@@ -8,7 +8,7 @@ class Api::V1::LookupsController < ApplicationController
       sexes: Sex.all, 
       sizes: Size.all, 
       petTypes: PetType.all,
-      immunisations: Immunisation.all,
+      immunisations: Immunisation.api_info,
       healthDetails: HealthDetail.all,
       medications: Medication.all,
       dose: Dose.all,

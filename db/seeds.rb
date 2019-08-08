@@ -27,82 +27,88 @@ check_user_exists = User.find_by(username: user[:username])
 User.create(user) if !check_user_exists
 
 color = ['Black', 'White', 'Orange', 'Grey', 'Calico']
-color.each{|color| Color.find_or_create_by(color: color)}
+color.each{|color| Color.find_or_create_by(name: color)}
 
 breeds = [
-  {breed: 'Labrador', banned: false}, 
-  {breed: 'Golden Retriever', banned: false}, 
-  {breed: 'Cocker Spaniel', banned: false}, 
-  {breed: 'German Shephard', banned: false}, 
-  {breed: 'Jack Russell Terrier', banned: false},
-  {breed: 'Pit Bull', banned: true}
+  {name: 'Labrador', banned: false}, 
+  {name: 'Golden Retriever', banned: false}, 
+  {name: 'Cocker Spaniel', banned: false}, 
+  {name: 'German Shephard', banned: false}, 
+  {name: 'Jack Russell Terrier', banned: false},
+  {name: 'Pit Bull', banned: true}
 ]
 breeds.each{|breed| Breed.find_or_create_by(breed)}
 
 sex = ['Male', 'Female']
-sex.each{|sex| Sex.find_or_create_by(sex: sex)}
+sex.each{|sex| Sex.find_or_create_by(name: sex)}
 
 sizes = ['X-Small', 'Small', 'Medium', 'Large', 'X-Large']
-sizes.each{|size| Size.find_or_create_by(size: size)}
+sizes.each{|size| Size.find_or_create_by(name: size)}
 
 pet_type = ['Cat', 'Dog', 'Hamster']
-pet_type.each{|type| PetType.find_or_create_by(animal: type)}
+pet_type.each{|type| PetType.find_or_create_by(name: type)}
 
-immunisation = ['DHLPP or DHPP', 'FVRCP', 'Rabies', 'Bordatella']
-immunisation.each{|imm| Immunisation.find_or_create_by(immunisation: imm)}
+immunisation = [
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'DHLPP or DHPP'}, 
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Rabies'}, 
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Bordatella'},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'FVRCP'}, 
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Rabies'}
+]
+immunisation.each{|imm| Immunisation.find_or_create_by(imm)}
 # Pet type per immunisation? How to define required ones? Hard code?
 
 validities = [{code: 1, duration: '1 year'}, {code: 3, duration: '3 years'}]
 validities.each{|validity| Validity.find_or_create_by(validity)}
 
 health_details = ['Heart problems', 'Blind', 'Deaf', 'Three lega']
-health_details.each{|detail| HealthDetail.find_or_create_by(health_detail: detail)}
+health_details.each{|detail| HealthDetail.find_or_create_by(name: detail)}
 
-special_needs = [{special_need: 'Agressive eater', action_needed: 'Cannot be fed around other dogs'}]
+special_needs = [{name: 'Agressive eater', action_needed: 'Cannot be fed around other dogs'}]
 special_needs.each{|need| SpecialNeed.find_or_create_by(need)}
 # Special Needs - action needed on dog as specific to the dog, not the condition?
 
-sociabilities = [{sociability: 'Friendly', alert: false}, {sociability: 'Playful', alert: false}, {sociability: 'Old', alert: false}, {sociability: 'Cannot be with other dogs', alert: true}]
+sociabilities = [{name: 'Friendly', alert: false}, {name: 'Playful', alert: false}, {name: 'Old', alert: false}, {name: 'Cannot be with other dogs', alert: true}]
 sociabilities.each{|soc| Sociability.find_or_create_by(soc)}
 
 medication = ['Insulin', 'Prozac']
-medication.each{|med| Medication.find_or_create_by(medication: med)}
+medication.each{|med| Medication.find_or_create_by(name: med)}
 
 doses = ['Pill', 'Shot']
-doses.each{|dose| Dose.find_or_create_by(dose: dose)}
+doses.each{|dose| Dose.find_or_create_by(name: dose)}
 
-schedules = [{schedule: 'Once Daily', fee: 1}, {schedule: 'Twice Daily', fee: 2}]
+schedules = [{name: 'Once Daily', fee: 1}, {name: 'Twice Daily', fee: 2}]
 schedules.each{|schedule| Schedule.find_or_create_by(schedule)}
 
 foods = ['Dry', 'Wet']
-foods.each{|food| Food.find_or_create_by(food: food)}
+foods.each{|food| Food.find_or_create_by(name: food)}
 
 measures = ['Cup', 'Scoop', 'Can']
-measures.each{|measure| Measure.find_or_create_by(measure: measure)}
+measures.each{|measure| Measure.find_or_create_by(name: measure)}
 
 person_types = ['Owner', 'Emergeny Contact']
-person_types.each{|type| PersonType.find_or_create_by(person_type: type)}
+person_types.each{|type| PersonType.find_or_create_by(name: type)}
 
 phone_types = ['Home', 'Cell', 'Work']
-phone_types.each{|type| PhoneType.find_or_create_by(phone_type: type)}
+phone_types.each{|type| PhoneType.find_or_create_by(name: type)}
 
 room_types = ['Dog Run', 'Cat Room', 'Cat Pen', 'Dog Grooming Pen']
-room_types.each{|type| RoomType.find_or_create_by(room_type: type)}
+room_types.each{|type| RoomType.find_or_create_by(name: type)}
 
 booking_statuses = ['Quote', 'Reservation', 'Active', 'Completed']
-booking_statuses.each{|status| BookingStatus.find_or_create_by(status: status)}
+booking_statuses.each{|status| BookingStatus.find_or_create_by(name: status)}
 
-issues = [{issue: 'Strong Puller', alert: false}, {issue: 'Excessive Barker', alert: true}, {issue: 'Chews Blankets', alert: true}, {issue: 'Excessive Digging', alert: true}]
+issues = [{name: 'Strong Puller', alert: false}, {name: 'Excessive Barker', alert: true}, {name: 'Chews Blankets', alert: true}, {name: 'Excessive Digging', alert: true}]
 issues.each{|issue| Issue.find_or_create_by(issue)}
 
-concerns = [{concern: 'Cost', alert: false}, {concern: 'Pay on drop off', alert: false}]
+concerns = [{name: 'Cost', alert: false}, {name: 'Pay on drop off', alert: false}]
 concerns.each{|concern| Concern.find_or_create_by(concern)}
 
 pen_types = [
-  {pet_type: PetType.find_by(animal: 'Dog'), pen_type: 'Dog run'},
-  {pet_type: PetType.find_by(animal: 'Cat'), pen_type: 'Cat room'},
-  {pet_type: PetType.find_by(animal: 'Cat'), pen_type: 'Cat pen'},
-  {pet_type: PetType.find_by(animal: 'Dog'), pen_type: 'Dog grooming pen'}
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog run'},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat room'},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat pen'},
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog grooming pen'}
 ]
 pen_types.each{|pen| PenType.find_or_create_by(pen)}
 
