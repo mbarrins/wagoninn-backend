@@ -2,7 +2,7 @@ class Api::V1::LookupsController < ApplicationController
   skip_before_action :authorize, only: [:index]
 
   def index
-    render json: {
+    render json: {lookups: {
       colors: Color.all, 
       breeds: Breed.api_info, 
       sexes: Sex.all, 
@@ -26,6 +26,6 @@ class Api::V1::LookupsController < ApplicationController
       concerns: Concern.api_info,
       penType: PenType.all
 
-    }
+    }}
   end
 end
