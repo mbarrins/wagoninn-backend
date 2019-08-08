@@ -1,4 +1,7 @@
 class Breed < ApplicationRecord
   has_many :pets
-  delegate :breed, :to => :pet
+
+  def self.api_info
+    Breed.all.map{|breed| {breed: breed.breed, banned: breed.banned}}
+  end
 end

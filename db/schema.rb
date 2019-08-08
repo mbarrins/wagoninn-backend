@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_07_142614) do
+ActiveRecord::Schema.define(version: 2019_08_08_085747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,8 +79,6 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "booking_statuses", force: :cascade do |t|
     t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "bookings", force: :cascade do |t|
@@ -99,21 +97,13 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "breeds", force: :cascade do |t|
     t.string "breed"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "cares", force: :cascade do |t|
-    t.string "care"
-    t.boolean "alert"
+    t.boolean "banned"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "colors", force: :cascade do |t|
     t.string "color"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "concerns", force: :cascade do |t|
@@ -125,30 +115,24 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "doses", force: :cascade do |t|
     t.string "dose"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "foods", force: :cascade do |t|
     t.string "food"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "health_details", force: :cascade do |t|
     t.string "health_detail"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
-  create_table "household_cares", force: :cascade do |t|
+  create_table "household_concerns", force: :cascade do |t|
     t.bigint "household_id"
-    t.bigint "cares_id"
+    t.bigint "concerns_id"
     t.boolean "inactive"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cares_id"], name: "index_household_cares_on_cares_id"
-    t.index ["household_id"], name: "index_household_cares_on_household_id"
+    t.index ["concerns_id"], name: "index_household_concerns_on_concerns_id"
+    t.index ["household_id"], name: "index_household_concerns_on_household_id"
   end
 
   create_table "household_pen_pets", force: :cascade do |t|
@@ -193,27 +177,26 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "immunisations", force: :cascade do |t|
     t.string "immunisation"
+  end
+
+  create_table "issues", force: :cascade do |t|
+    t.string "issue"
+    t.boolean "alert"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "measures", force: :cascade do |t|
     t.string "measure"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "medications", force: :cascade do |t|
     t.string "medication"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "pen_types", force: :cascade do |t|
     t.bigint "pet_type_id"
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "pen_type"
     t.index ["pet_type_id"], name: "index_pen_types_on_pet_type_id"
   end
 
@@ -236,18 +219,20 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "person_types", force: :cascade do |t|
     t.string "person_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
-  create_table "pet_concerns", force: :cascade do |t|
+  create_table "pet_foods", force: :cascade do |t|
     t.bigint "pet_id"
-    t.bigint "concerns_id"
-    t.boolean "inactive"
+    t.bigint "food_id"
+    t.integer "quantity"
+    t.bigint "measure_id"
+    t.bigint "schedule_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["concerns_id"], name: "index_pet_concerns_on_concerns_id"
-    t.index ["pet_id"], name: "index_pet_concerns_on_pet_id"
+    t.index ["food_id"], name: "index_pet_foods_on_food_id"
+    t.index ["measure_id"], name: "index_pet_foods_on_measure_id"
+    t.index ["pet_id"], name: "index_pet_foods_on_pet_id"
+    t.index ["schedule_id"], name: "index_pet_foods_on_schedule_id"
   end
 
   create_table "pet_health_details", force: :cascade do |t|
@@ -272,6 +257,16 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
     t.index ["immunisation_id"], name: "index_pet_immunisations_on_immunisation_id"
     t.index ["pet_id"], name: "index_pet_immunisations_on_pet_id"
     t.index ["validity_id"], name: "index_pet_immunisations_on_validity_id"
+  end
+
+  create_table "pet_issues", force: :cascade do |t|
+    t.bigint "pet_id"
+    t.bigint "issues_id"
+    t.boolean "inactive"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["issues_id"], name: "index_pet_issues_on_issues_id"
+    t.index ["pet_id"], name: "index_pet_issues_on_pet_id"
   end
 
   create_table "pet_medications", force: :cascade do |t|
@@ -313,8 +308,6 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "pet_types", force: :cascade do |t|
     t.string "animal"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "pets", force: :cascade do |t|
@@ -341,8 +334,6 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "phone_types", force: :cascade do |t|
     t.string "phone_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "phones", force: :cascade do |t|
@@ -372,8 +363,6 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "room_types", force: :cascade do |t|
     t.string "room_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "schedules", force: :cascade do |t|
@@ -385,14 +374,10 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "sexes", force: :cascade do |t|
     t.string "sex"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "sizes", force: :cascade do |t|
     t.string "size"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "sociabilities", force: :cascade do |t|
@@ -405,6 +390,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   create_table "special_needs", force: :cascade do |t|
     t.string "special_need"
     t.string "action_needed"
+    t.boolean "current", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -432,8 +418,6 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   create_table "validities", force: :cascade do |t|
     t.integer "code"
     t.string "duration"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "addresses", "households"
@@ -451,8 +435,8 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   add_foreign_key "booking_pens", "pens"
   add_foreign_key "bookings", "booking_statuses"
   add_foreign_key "bookings", "households"
-  add_foreign_key "household_cares", "cares", column: "cares_id"
-  add_foreign_key "household_cares", "households"
+  add_foreign_key "household_concerns", "concerns", column: "concerns_id"
+  add_foreign_key "household_concerns", "households"
   add_foreign_key "household_pen_pets", "household_pens"
   add_foreign_key "household_pen_pets", "pets"
   add_foreign_key "household_pen_pets", "rates"
@@ -463,13 +447,17 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   add_foreign_key "household_people", "person_types"
   add_foreign_key "pen_types", "pet_types"
   add_foreign_key "pens", "room_types"
-  add_foreign_key "pet_concerns", "concerns", column: "concerns_id"
-  add_foreign_key "pet_concerns", "pets"
+  add_foreign_key "pet_foods", "foods"
+  add_foreign_key "pet_foods", "measures"
+  add_foreign_key "pet_foods", "pets"
+  add_foreign_key "pet_foods", "schedules"
   add_foreign_key "pet_health_details", "health_details"
   add_foreign_key "pet_health_details", "pets"
   add_foreign_key "pet_immunisations", "immunisations"
   add_foreign_key "pet_immunisations", "pets"
   add_foreign_key "pet_immunisations", "validities"
+  add_foreign_key "pet_issues", "issues", column: "issues_id"
+  add_foreign_key "pet_issues", "pets"
   add_foreign_key "pet_medications", "doses"
   add_foreign_key "pet_medications", "medications"
   add_foreign_key "pet_medications", "pets"

@@ -6,7 +6,11 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-user_types = [{position: 'Owner', allow_override: true}, {position: 'Manager', allow_override: true}, {position: 'Employee', allow_override: false}]
+user_types = [
+  {position: 'Owner', allow_override: true}, 
+  {position: 'Manager', allow_override: true}, 
+  {position: 'Employee', allow_override: false}
+]
 user_types.each{|type| UserType.find_or_create_by(type)} 
 
 user = {
@@ -25,8 +29,15 @@ User.create(user) if !check_user_exists
 color = ['Black', 'White', 'Orange', 'Grey', 'Calico']
 color.each{|color| Color.find_or_create_by(color: color)}
 
-breeds = ['Labrador', 'Golden Retriever', 'Cocker Spaniel', 'German Shephard', 'Jack Russell Terrier']
-breeds.each{|breed| Breed.find_or_create_by(breed: breed)}
+breeds = [
+  {breed: 'Labrador', banned: false}, 
+  {breed: 'Golden Retriever', banned: false}, 
+  {breed: 'Cocker Spaniel', banned: false}, 
+  {breed: 'German Shephard', banned: false}, 
+  {breed: 'Jack Russell Terrier', banned: false},
+  {breed: 'Pit Bull', banned: true}
+]
+breeds.each{|breed| Breed.find_or_create_by(breed)}
 
 sex = ['Male', 'Female']
 sex.each{|sex| Sex.find_or_create_by(sex: sex)}
@@ -81,10 +92,33 @@ room_types.each{|type| RoomType.find_or_create_by(room_type: type)}
 booking_statuses = ['Quote', 'Reservation', 'Active', 'Completed']
 booking_statuses.each{|status| BookingStatus.find_or_create_by(status: status)}
 
-concerns = [{concern: 'Strong Puller', alert: false}, {concern: 'Excessive Barker', alert: true}, {concern: 'Chews Blankets', alert: true}, {concern: 'Excessive Digging', alert: true}]
+issues = [{issue: 'Strong Puller', alert: false}, {issue: 'Excessive Barker', alert: true}, {issue: 'Chews Blankets', alert: true}, {issue: 'Excessive Digging', alert: true}]
+issues.each{|issue| Issue.find_or_create_by(issue)}
+
+concerns = [{concern: 'Cost', alert: false}, {concern: 'Pay on drop off', alert: false}]
 concerns.each{|concern| Concern.find_or_create_by(concern)}
 
-cares = [{care: 'Cost', alert: false}, {care: 'Pay on drop off', alert: false}]
-cares.each{|care| Care.find_or_create_by(care)}
-#rename to issues?
+pen_types = [
+  {pet_type: PetType.find_by(animal: 'Dog'), pen_type: 'Dog run'},
+  {pet_type: PetType.find_by(animal: 'Cat'), pen_type: 'Cat room'},
+  {pet_type: PetType.find_by(animal: 'Cat'), pen_type: 'Cat pen'},
+  {pet_type: PetType.find_by(animal: 'Dog'), pen_type: 'Dog grooming pen'}
+]
+pen_types.each{|pen| PenType.find_or_create_by(pen)}
+
+pets = [
+  { pet_type: PetType.all.sample,
+    name: '',
+    dob: '',
+    sex: Sex.all.sample,
+    color: Color.all.sample,
+    size: Size.all.sample,
+    breed: Breed.all.sample,
+    spayed_neutered: true,
+    notes: '',
+    special_needs_fee: false,
+    no_return: false,
+    inactive: false
+  }
+]
 

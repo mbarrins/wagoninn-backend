@@ -1,2 +1,0 @@
-class Care < ApplicationRecord
-end

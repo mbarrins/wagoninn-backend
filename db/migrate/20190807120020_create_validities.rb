@@ -4,7 +4,6 @@ class CreateValidities < ActiveRecord::Migration[5.2]
       t.integer :code
       t.string :duration
 
-      t.timestamps
     end
   end
 end

@@ -3,7 +3,6 @@ class CreateMedications < ActiveRecord::Migration[5.2]
     create_table :medications do |t|
       t.string :medication
 
-      t.timestamps
     end
   end
 end
