@@ -60,7 +60,7 @@ immunisation.each{|imm| Immunisation.find_or_create_by(imm)}
 validities = [{code: 1, name: '1 year'}, {code: 3, name: '3 years'}]
 validities.each{|validity| Validity.find_or_create_by(validity)}
 
-health_details = ['Heart problems', 'Blind', 'Deaf', 'Three lega']
+health_details = ['Heart problems', 'Blind', 'Deaf', 'Three legs']
 health_details.each{|detail| HealthDetail.find_or_create_by(name: detail)}
 
 special_needs = [{name: 'Agressive eater', action_needed: 'Cannot be fed around other dogs'}]
