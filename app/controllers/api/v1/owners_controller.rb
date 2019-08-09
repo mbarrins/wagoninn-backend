@@ -10,7 +10,7 @@ class Api::V1::OwnersController < ApplicationController
   def create
     owner = Owner.find_or_create_by(owners_params)
     if owner.valid? 
-      render json: {owner: owner, include: :pets}
+      render json: owner, include: :pets
     else
       render json: {errors: owner.errors.full_messages}, status: :not_accepted
     end
