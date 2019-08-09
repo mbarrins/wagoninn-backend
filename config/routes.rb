@@ -4,7 +4,9 @@ Rails.application.routes.draw do
     namespace :v1 do
         post '/login', to: 'auth#create'
         get '/validate', to: 'auth#validate'
-        get '/lookups', to: 'lookups#index'
+        resources :lookups, only: [:index]
+        resources :owners, only: [:show, :create, :update]
+        resources :pets, only: [:show, :create, :update]
     end
   end
 end

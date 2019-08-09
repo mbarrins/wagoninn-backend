@@ -12,4 +12,5 @@ class Pet < ApplicationRecord
   has_many :pet_sociabilities
   has_many :pet_issues
 
+  
 end
