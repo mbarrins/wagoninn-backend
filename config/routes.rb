@@ -9,4 +9,8 @@ Rails.application.routes.draw do
         resources :pets, only: [:show, :create, :update]
     end
   end
+
+  root 'static#index'
+  get '/', to: 'static#index'
+  get '*other', to: 'static#index'
 end
