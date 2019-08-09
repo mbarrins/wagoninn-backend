@@ -5,6 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+require 'faker'
+require 'Date'
 
 user_types = [
   {position: 'Owner', allow_override: true}, 
@@ -108,19 +110,53 @@ pen_types = [
 ]
 pen_types.each{|pen| PenType.find_or_create_by(pen)}
 
-pets = [
-  { pet_type: PetType.all.sample,
-    name: '',
-    dob: '',
-    sex: Sex.all.sample,
-    color: Color.all.sample,
-    size: Size.all.sample,
-    breed: Breed.all.sample,
-    spayed_neutered: true,
-    notes: '',
-    special_needs_fee: false,
-    no_return: false,
-    inactive: false
-  }
-]
+Faker::Config.locale = 'en-US'
 
+30.times do 
+  agreed = rand(100) > 30
+  address_lines = rand(3) + 1
+
+  Owner.create({
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name,
+    email: Faker::Internet.email,
+    primary_phone: Faker::PhoneNumber.phone_number,
+    primary_phone_type_id: PhoneType.all.sample, 
+    secondary_phone: Faker::PhoneNumber.phone_number,
+    secondary_phone_type_id: PhoneType.all.sample, 
+    address_line_1: address_lines > 1 ? Faker::Address.secondary_address : Faker::Address.street_address,
+    address_line_2: address_lines == 3 ? Faker::Address.community : address_lines == 2 ? Faker::Address.street_address : nil,
+    address_line_3: address_lines == 3 ? Faker::Address.street_address : nil,
+    city: Faker::Address.city,
+    state: Faker::Address.state_abbr,
+    zipcode: Faker::Address.zip_code,
+    emergency_contact_name: Faker::Name.name,
+    emergency_contact_phone: Faker::PhoneNumber.phone_number,
+    partner_name: Faker::Name.name,
+    partner_phone: Faker::PhoneNumber.phone_number,
+    agreed_terms: agreed,
+    agreed_date: agreed ? Faker::Date.birthday(0, 3) : nil
+  })
+end
+
+50.times do 
+  dog = rand(100) > 20
+  spayed_neutered = rand(100) > 20
+
+  Pet.create(
+    { owner_id: Owner.all.sample.id,
+      pet_type_id: dog ? PetType.find_by(name: 'Dog').id : PetType.find_by(name: 'Cat').id,
+      name: dog ? Faker::Creature::Dog.name : Faker::Creature::Cat.name,
+      dob: Faker::Date.birthday(0, 10) ,
+      sex_id: Sex.all.sample.id,
+      color_id: dog ? nil : Color.all.sample.id,
+      size_id: Size.all.sample.id,
+      breed_id: dog ? Breed.all.sample.id : nil,
+      spayed_neutered: spayed_neutered,
+      notes: '',
+      special_needs_fee: false,
+      no_return: false,
+      inactive: false
+    }
+  )
+  end
