@@ -7,10 +7,11 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'localhost:3001'
+    origins 'localhost:3001', 'http://wagoninn.herokuapp.com'
 
-    resource '*',
+    resource '/api/*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head, :update, :create]
   end
+  
 end

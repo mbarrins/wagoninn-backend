@@ -10,7 +10,4 @@ Rails.application.routes.draw do
     end
   end
 
-  root 'static#index'
-  get '/', to: 'static#index'
-  get '*other', to: 'static#index'
 end
