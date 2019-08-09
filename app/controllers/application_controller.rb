@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+  protect_from_forgery with: :exception
   before_action :set_current_user
   before_action :authorize
 
@@ -23,6 +24,10 @@ class ApplicationController < ActionController::API
     else 
         @current_user = nil
     end
+  end
+
+  def fallback_index_html
+    render :file => 'public/index.html'
   end
 
   def logged_in
