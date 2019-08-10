@@ -1,3 +1,3 @@
 class Rate < ApplicationRecord
-  belongs_to :pet_type
+  belongs_to :pen_type
 end

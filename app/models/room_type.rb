@@ -1,2 +1,0 @@
-class RoomType < ApplicationRecord
-end

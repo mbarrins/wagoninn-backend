@@ -15,7 +15,6 @@ class Api::V1::LookupsController < ApplicationController
       foods: Food.all,
       measures: Measure.all,
       phoneTypes: PhoneType.all,
-      roomTypes: RoomType.all,
       bookingStatuses: BookingStatus.all,
       validity: Validity.all,
       specialNeeds: SpecialNeed.api_info,

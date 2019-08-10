@@ -1,7 +1,7 @@
 class CreateRates < ActiveRecord::Migration[5.2]
   def change
     create_table :rates do |t|
-      t.references :pet_type, foreign_key: true
+      t.references :pen_type, foreign_key: true
       t.integer :no
       t.string :desc
       t.decimal :amount

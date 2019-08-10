@@ -89,9 +89,6 @@ measures.each{|measure| Measure.find_or_create_by(name: measure)}
 phone_types = ['Home', 'Cell', 'Work']
 phone_types.each{|type| PhoneType.find_or_create_by(name: type)}
 
-room_types = ['Dog Run', 'Cat Room', 'Cat Pen', 'Dog Grooming Pen']
-room_types.each{|type| RoomType.find_or_create_by(name: type)}
-
 booking_statuses = ['Quote', 'Reservation', 'Active', 'Completed']
 booking_statuses.each{|status| BookingStatus.find_or_create_by(name: status)}
 
@@ -102,12 +99,65 @@ concerns = [{name: 'Cost', alert: false}, {name: 'Pay on drop off', alert: false
 concerns.each{|concern| Concern.find_or_create_by(concern)}
 
 pen_types = [
-  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog run'},
-  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat room'},
-  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat pen'},
-  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog grooming pen'}
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Run', max_per_pen: 3},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Room', max_per_pen: 2},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Pen', max_per_pen: 1},
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen', max_per_pen: 1}
 ]
 pen_types.each{|pen| PenType.find_or_create_by(pen)}
+
+rates = [
+  { 
+    pen_type: PenType.find_by(name: 'Dog Run'),
+    no: 1,
+    desc: 'Dog Run first dog',
+    amount: 30,
+    effective_from: '2019-01-01'
+  },
+  { 
+    pen_type: PenType.find_by(name: 'Dog Run'),
+    no: 2,
+    desc: 'Dog Run second dog',
+    amount: 15,
+    effective_from: '2019-01-01'
+  },
+  { 
+    pen_type: PenType.find_by(name: 'Dog Run'),
+    no: 3,
+    desc: 'Dog Run third dog (all small)',
+    amount: 15,
+    effective_from: '2019-01-01'
+  },
+  { 
+    pen_type: PenType.find_by(name: 'Cat Room'),
+    no: 1,
+    desc: 'Cat Room first cat',
+    amount: 22,
+    effective_from: '2019-01-01'
+  },
+  { 
+    pen_type: PenType.find_by(name: 'Cat Room'),
+    no: 1,
+    desc: 'Cat Room second cat',
+    amount: 11,
+    effective_from: '2019-01-01'
+  },
+  { 
+    pen_type: PenType.find_by(name: 'Cat Pen'),
+    no: 1,
+    desc: 'Cat Pen single cat',
+    amount: 30,
+    effective_from: '2019-01-01'
+  },
+  { 
+    pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'),
+    no: 1,
+    desc: 'Dog Grooming Pen single dog',
+    amount: 30,
+    effective_from: '2019-01-01'
+  }
+]
+rates.each{|rate| Rate.find_or_create_by(rate)}
 
 Faker::Config.locale = 'en-US'
 
