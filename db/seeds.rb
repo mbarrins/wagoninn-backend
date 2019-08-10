@@ -110,36 +110,36 @@ rates = [
   { 
     pen_type: PenType.find_by(name: 'Dog Run'),
     no: 1,
-    desc: 'Dog Run first dog',
+    desc: 'Dog Run single dog',
     amount: 30,
     effective_from: '2019-01-01'
   },
   { 
     pen_type: PenType.find_by(name: 'Dog Run'),
     no: 2,
-    desc: 'Dog Run second dog',
-    amount: 15,
+    desc: 'Dog Run two dogs sharing',
+    amount: 45,
     effective_from: '2019-01-01'
   },
   { 
     pen_type: PenType.find_by(name: 'Dog Run'),
     no: 3,
-    desc: 'Dog Run third dog (all small)',
-    amount: 15,
+    desc: 'Dog Run three dogs sharing (all small)',
+    amount: 60,
     effective_from: '2019-01-01'
   },
   { 
     pen_type: PenType.find_by(name: 'Cat Room'),
     no: 1,
-    desc: 'Cat Room first cat',
+    desc: 'Cat Room single cat',
     amount: 22,
     effective_from: '2019-01-01'
   },
   { 
     pen_type: PenType.find_by(name: 'Cat Room'),
-    no: 1,
-    desc: 'Cat Room second cat',
-    amount: 11,
+    no: 2,
+    desc: 'Cat Room two cats from same family',
+    amount: 33,
     effective_from: '2019-01-01'
   },
   { 

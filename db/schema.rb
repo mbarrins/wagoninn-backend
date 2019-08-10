@@ -16,19 +16,26 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   enable_extension "plpgsql"
 
   create_table "booking_pen_pets", force: :cascade do |t|
-    t.bigint "booking_id"
-    t.bigint "pen_type_id"
-    t.bigint "pen_id"
+    t.bigint "booking_pen_id"
     t.bigint "pet_id"
-    t.bigint "rate_id"
     t.boolean "special_needs_fee"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["booking_id"], name: "index_booking_pen_pets_on_booking_id"
-    t.index ["pen_id"], name: "index_booking_pen_pets_on_pen_id"
-    t.index ["pen_type_id"], name: "index_booking_pen_pets_on_pen_type_id"
+    t.index ["booking_pen_id"], name: "index_booking_pen_pets_on_booking_pen_id"
     t.index ["pet_id"], name: "index_booking_pen_pets_on_pet_id"
-    t.index ["rate_id"], name: "index_booking_pen_pets_on_rate_id"
+  end
+
+  create_table "booking_pens", force: :cascade do |t|
+    t.bigint "booking_id"
+    t.bigint "pen_type_id"
+    t.bigint "pen_id"
+    t.bigint "rate_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["booking_id"], name: "index_booking_pens_on_booking_id"
+    t.index ["pen_id"], name: "index_booking_pens_on_pen_id"
+    t.index ["pen_type_id"], name: "index_booking_pens_on_pen_type_id"
+    t.index ["rate_id"], name: "index_booking_pens_on_rate_id"
   end
 
   create_table "booking_pet_medications", force: :cascade do |t|
@@ -376,11 +383,12 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
     t.string "name"
   end
 
-  add_foreign_key "booking_pen_pets", "bookings"
-  add_foreign_key "booking_pen_pets", "pen_types"
-  add_foreign_key "booking_pen_pets", "pens"
+  add_foreign_key "booking_pen_pets", "booking_pens"
   add_foreign_key "booking_pen_pets", "pets"
-  add_foreign_key "booking_pen_pets", "rates"
+  add_foreign_key "booking_pens", "bookings"
+  add_foreign_key "booking_pens", "pen_types"
+  add_foreign_key "booking_pens", "pens"
+  add_foreign_key "booking_pens", "rates"
   add_foreign_key "booking_pet_medications", "booking_pen_pets"
   add_foreign_key "booking_pet_medications", "doses"
   add_foreign_key "booking_pet_medications", "medications"
