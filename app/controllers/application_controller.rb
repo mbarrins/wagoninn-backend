@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::API
-  skip_before_action :authorize, only: [:fallback_index_html]
-  before_action :set_current_user
+  before_action :set_current_user, except: [:fallback_index_html]
   before_action :authorize
 
   def issue_token(payload)
