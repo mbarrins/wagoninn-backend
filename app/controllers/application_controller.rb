@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :set_current_user, except: [:fallback_index_html]
-  before_action :authorize
+  before_action :authorize, except: [:fallback_index_html]
 
   def issue_token(payload)
       JWT.encode(payload, ENV['RAILS_SECRET'])
