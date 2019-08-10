@@ -22,7 +22,9 @@ class Api::V1::LookupsController < ApplicationController
       schedules: Schedule.api_info,
       issues: Issue.api_info,
       concerns: Concern.api_info,
-      penTypes: PenType.all
+      penTypes: PenType.all,
+      rates: Rate.api_info,
+      currentRates: Rate.all_current
       }
     }
   end
