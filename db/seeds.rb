@@ -61,10 +61,10 @@ immunisation.each{|imm| Immunisation.find_or_create_by(imm)}
 validities = [{code: 1, name: '1 year'}, {code: 3, name: '3 years'}]
 validities.each{|validity| Validity.find_or_create_by(validity)}
 
-health_details = ['Heart problems', 'Blind', 'Deaf', 'Three legs']
-health_details.each{|detail| HealthDetail.find_or_create_by(name: detail)}
+health_details = [{name: 'Heart problems', alert: false}, {name: 'Blind', alert: false}, {name: 'Deaf', alert: false}, {name: 'Three legs', alert: false}]
+health_details.each{|detail| HealthDetail.find_or_create_by(detail)}
 
-special_needs = [{name: 'Agressive eater', action_needed: 'Cannot be fed around other dogs'}]
+special_needs = [{name: 'Agressive eater', action_needed: 'Cannot be fed around other dogs', alert: true}]
 special_needs.each{|need| SpecialNeed.find_or_create_by(need)}
 # Special Needs - action needed on dog as specific to the dog, not the condition?
 

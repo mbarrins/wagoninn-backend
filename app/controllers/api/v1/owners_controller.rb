@@ -1,6 +1,5 @@
 class Api::V1::OwnersController < ApplicationController
   skip_before_action :authorize, only: [:show]
-
   before_action :set_owner, only: [:show]
   
   def show
