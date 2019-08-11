@@ -102,7 +102,7 @@ pen_types = [
   {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Run', max_per_pen: 3},
   {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Room', max_per_pen: 2},
   {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Pen', max_per_pen: 1},
-  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen', max_per_pen: 1}
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen (overflow only)', max_per_pen: 1}
 ]
 pen_types.each{|pen| PenType.find_or_create_by(pen)}
 
@@ -159,6 +159,40 @@ rates = [
 ]
 rates.each{|rate| Rate.find_or_create_by(rate)}
 
+pens = [
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '1 (large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '2 (large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '3 (large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '4 (large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '5 (large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '6 (large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '7 (large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '8 (large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '9 (X-large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '10 (X-large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '11 (X-large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '12 (X-large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '13 (X-large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '14 (X-large door)'},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '15 (X-large door)'},
+  {pen_type: PenType.find_by(name: 'Cat Pen'), name: 'Cat Pen'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (1)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (2)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (3)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (4)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (5)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (6)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (7)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (8)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (9)'},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (10)'},
+  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '20 (grooming pen)'},
+  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '21 (grooming pen)'},
+  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '22 (grooming pen)'},
+  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '23 (grooming pen)'}
+]
+pens.each{|pen| Pen.find_or_create_by(pen)}
+
 Faker::Config.locale = 'en-US'
 
 30.times do 
@@ -208,4 +242,103 @@ end
       inactive: false
     }
   )
+end
+
+Owner.select{|owner| owner.pets.length == 0}.each do |owner|
+  dog = rand(100) > 20
+  spayed_neutered = rand(100) > 20
+  pets = rand(5)
+
+  pets.times do
+    Pet.create(
+      { owner_id: owner.id,
+        pet_type_id: dog ? PetType.find_by(name: 'Dog').id : PetType.find_by(name: 'Cat').id,
+        name: dog ? Faker::Creature::Dog.name : Faker::Creature::Cat.name,
+        dob: Faker::Date.birthday(0, 10) ,
+        sex_id: Sex.all.sample.id,
+        color_id: dog ? nil : Color.all.sample.id,
+        size_id: Size.all.sample.id,
+        breed_id: dog ? Breed.all.sample.id : nil,
+        spayed_neutered: spayed_neutered,
+        notes: '',
+        special_needs_fee: false,
+        no_return: false,
+        inactive: false
+      }
+    )
   end
+end
+
+100.times do 
+  check_in_date = rand(Date.new(2019,7,1)..Date.new(2019,10,01))
+  check_out_date = check_in_date + [2,3,4,5,6,7,8,9,10,11,12,13,14].sample
+  
+  owner = Owner.all.sample
+  dogs = owner.pets.select{|pet| pet.pet_type.name === 'Dog'}
+  dog_pens = (dogs.length / 2) + (dogs.length % 2)
+  dog_rates = dog_rates = ([2] * (dogs.length/2)) + ([1] * (dogs.length % 2))
+  cats = owner.pets.select{|pet| pet.pet_type.name === 'Cat'}
+  cat_pens = (cats.length / 2) + (cats.length % 2)
+  cat_rates = cat_rates = ([5] * (cats.length/2)) + ([4] * (cats.length % 2))
+
+  booking_status =  if check_out_date < Date.today
+                      BookingStatus.find_by(name: 'Completed')
+                    elsif check_in_date <= Date.today
+                      BookingStatus.find_by(name: 'Active')
+                    else
+                      ([BookingStatus.find_by(name: 'Reservation')]*9 + [BookingStatus.find_by(name: 'Quote')]).sample
+                    end
+
+  booking = Booking.find_or_create_by(
+    {
+      owner_id: owner.id, 
+      check_in: check_in_date, 
+      check_in_time: ['AM','PM'].sample, 
+      check_out: check_out_date, 
+      check_out_time: ['AM','PM'].sample, 
+      booking_status: booking_status
+    }
+  )
+
+  booking.booking_ref = booking.create_booking_ref
+  booking.save
+
+  dog_rates.each_with_index do |rate, index|
+    booking_pen = BookingPen.find_or_create_by({
+      booking: booking, 
+      pen_type: PenType.find_by(name: 'Dog Run'),
+      rate_id: rate
+    })
+
+    count = 0
+    rate.times do
+      BookingPenPet.find_or_create_by({
+        booking_pen: booking_pen,
+        pet: dogs[count + (index*2)],
+        special_needs_fee: false
+      })
+      count += 1
+    end
+  end
+
+  cat_rates.each_with_index do |rate, index|
+    booking_pen = BookingPen.find_or_create_by({
+      booking: booking, 
+      pen_type: PenType.find_by(name: 'Cat Room'),
+      rate_id: rate
+    })
+
+    count = 0
+    rate.times do
+      BookingPenPet.find_or_create_by({
+        booking_pen: booking_pen,
+        pet: cats[count + (index*2)],
+        special_needs_fee: false
+      })
+      count += 1
+    end
+  end
+end
+
+  
+
