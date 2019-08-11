@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "health_details", force: :cascade do |t|
     t.string "name"
+    t.boolean "alert"
   end
 
   create_table "immunisations", force: :cascade do |t|
@@ -216,8 +217,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   create_table "pet_health_details", force: :cascade do |t|
     t.bigint "pet_id"
     t.bigint "health_detail_id"
-    t.date "effective_from"
-    t.date "effective_to"
+    t.boolean "inactive"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["health_detail_id"], name: "index_pet_health_details_on_health_detail_id"
@@ -239,11 +239,11 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "pet_issues", force: :cascade do |t|
     t.bigint "pet_id"
-    t.bigint "issues_id"
+    t.bigint "issue_id"
     t.boolean "inactive"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["issues_id"], name: "index_pet_issues_on_issues_id"
+    t.index ["issue_id"], name: "index_pet_issues_on_issue_id"
     t.index ["pet_id"], name: "index_pet_issues_on_pet_id"
   end
 
@@ -253,8 +253,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
     t.bigint "dose_id"
     t.integer "dose_quantity"
     t.bigint "schedule_id"
-    t.date "effective_from"
-    t.date "effective_to"
+    t.boolean "inactive"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["dose_id"], name: "index_pet_medications_on_dose_id"
@@ -276,8 +275,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   create_table "pet_special_needs", force: :cascade do |t|
     t.bigint "pet_id"
     t.bigint "special_need_id"
-    t.date "effective_from"
-    t.date "effective_to"
+    t.boolean "inactive"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["pet_id"], name: "index_pet_special_needs_on_pet_id"
@@ -353,6 +351,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   create_table "special_needs", force: :cascade do |t|
     t.string "name"
     t.string "action_needed"
+    t.boolean "alert"
     t.boolean "current", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -417,7 +416,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   add_foreign_key "pet_immunisations", "immunisations"
   add_foreign_key "pet_immunisations", "pets"
   add_foreign_key "pet_immunisations", "validities"
-  add_foreign_key "pet_issues", "issues", column: "issues_id"
+  add_foreign_key "pet_issues", "issues"
   add_foreign_key "pet_issues", "pets"
   add_foreign_key "pet_medications", "doses"
   add_foreign_key "pet_medications", "medications"

@@ -6,8 +6,7 @@ class CreatePetMedications < ActiveRecord::Migration[5.2]
       t.references :dose, foreign_key: true
       t.integer :dose_quantity
       t.references :schedule, foreign_key: true
-      t.date :effective_from
-      t.date :effective_to
+      t.boolean :inactive
 
       t.timestamps
     end
