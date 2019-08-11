@@ -299,10 +299,7 @@ end
       booking_status: booking_status
     }
   )
-
-  booking.booking_ref = booking.create_booking_ref
-  booking.save
-
+  
   dog_rates.each_with_index do |rate, index|
     booking_pen = BookingPen.find_or_create_by({
       booking: booking, 
