@@ -3,7 +3,7 @@ class Api::V1::OwnersController < ApplicationController
   before_action :set_owner, only: [:show]
   
   def show
-    render json: @owner, include: :pets
+    render json: @owner, include: [:pets, :bookings => {include: [:booking_pens => {include: :booking_pen_pets}]}]
   end
 
   def create
