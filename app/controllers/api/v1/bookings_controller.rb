@@ -7,8 +7,8 @@ class Api::V1::BookingsController < ApplicationController
   end
 
   def create
-
-    booking = Booking.create_with_all(booking: bookings_params, booking_pens: booking_pens_params)
+    
+    booking = Booking.create_with_all(booking: bookings_params, booking_pens: booking_pens_params[:booking_pens])
 
     if booking.valid? 
       render json: booking, include: [:booking_pens => {include: :booking_pen_pets}]

@@ -5,22 +5,23 @@ class Booking < ApplicationRecord
   after_create :set_booking_ref
 
   def self.create_with_all(booking:, booking_pens:)
-    booking = Booking.find_or_create_by(booking)
 
+    booking = Booking.find_or_create_by(booking)
+    
     if booking.valid?
       booking_pens.each do |pen|
         booking_pen = BookingPen.find_or_create_by({
           booking: booking,
-          pen_type_id: pen.pen_type_id,
-          pen_id: pen.pen_id,
-          rate_id: pen.rate_id
+          pen_type_id: pen['pen_type_id'],
+          pen_id: pen['pen_id'],
+          rate_id: pen['rate_id']
         })
 
-        pen.booking_pen_pets.each do |pet|
+        pen['booking_pen_pets'].each do |pet|
           BookingPenPet.find_or_create_by({
             booking_pen: booking_pen,
-            pet_id: pet.pet_id,
-            special_needs_fee: pet.special_needs_fee
+            pet_id: pet['pet_id'],
+            special_needs_fee: pet['special_needs_fee']
           })
         end
       end
