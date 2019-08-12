@@ -32,7 +32,7 @@ class Booking < ApplicationRecord
 
   def self.daily_detail(date:)
     {
-      todays_pens: Booking.all.select{|booking| booking.check_in <= Date.parse(date) && booking.check_out > Date.parse(date)}.map{|booking| booking.booking_detail},
+      todays_pens: BookingPen.daily_detail(date: date),
       today_pick_up: 
         {
           am: Booking.all.select{|booking| booking.check_out == Date.parse(date) && booking.check_out_time == 'AM'}.map{|booking| booking.booking_detail},

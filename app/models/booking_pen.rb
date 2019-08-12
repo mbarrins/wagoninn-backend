@@ -23,7 +23,9 @@ class BookingPen < ApplicationRecord
     todays_pens = BookingPen.all.select{|pen| pen.booking.check_in <= Date.parse(date) && pen.booking.check_out > Date.parse(date)}
 
     PenType.all.map do |type|
-      [type.name, todays_pens.select{|pen| pen.pen_type_id == type.id}]
+      [type.name.gsub(/\s+/, ""), todays_pens.select{|pen| pen.pen_type_id == type.id}.map do |pen|
+        pen.booking_pen_detail
+      end]
     end.to_h
 
   end
@@ -37,6 +39,7 @@ class BookingPen < ApplicationRecord
       check_out_time: self.booking.check_out_time,
       owner_name: self.booking.owner.name,
       pen: self.pen.name,
+      pen_no: self.pen.no,
       pet_listing: self.booking_pen_pets.map{|pet| pet.pet.name}.to_sentence
     }
   end
