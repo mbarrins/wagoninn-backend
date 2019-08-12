@@ -30,6 +30,44 @@ class Booking < ApplicationRecord
     booking
   end
 
+  def self.daily_detail(date:)
+    {
+      todays_pens: Booking.all.select{|booking| booking.check_in <= Date.parse(date) && booking.check_out > Date.parse(date)}.map{|booking| booking.booking_detail},
+      today_pick_up: 
+        {
+          am: Booking.all.select{|booking| booking.check_out == Date.parse(date) && booking.check_out_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: Booking.all.select{|booking| booking.check_out === Date.parse(date) && booking.check_out_time == 'PM'}.map{|booking| booking.booking_detail}
+        },
+      today_drop_off: 
+        {
+          am: Booking.all.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: Booking.all.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
+        },
+      tomorrow_drop_off: 
+        {
+          am: Booking.all.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: Booking.all.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
+        }
+    }
+  end
+
+  def booking_detail
+    pets = self.booking_pens.map{|pen| pen.booking_pen_pets.map{|pet| {pet_type: pet.pet.pet_type.name, pet_name: pet.pet.name}}}.flatten
+    dogs = pets.select{|pet| pet[:pet_type] == 'Dog'}.map{|pet| pet[:pet_name]}
+    cats = pets.select{|pet| pet[:pet_type] == 'Cat'}.map{|pet| pet[:pet_name]}
+
+    {
+      id: self.id,
+      check_in: self.check_in,
+      check_in_time: self.check_in_time,
+      check_out: self.check_out,
+      check_out_time: self.check_out_time,
+      owner_name: self.owner.name,
+      pens: self.booking_pens.map{|pen| {pen_type: pen.pen_type.name, pet_type: pen.pen_type.pet_type.name, pets: pen.booking_pen_pets.map{|pet| pet.pet.name}}},
+      pet_listing: '' + (dogs.length > 0 ? "#{dogs.length == 1 ? 'Dog' : 'Dogs'}: #{dogs.to_sentence}" : '') + (dogs.length > 0 && cats.length > 0 ? ', plus ' : '')  +  (cats.length > 0 ? "#{cats.length == 1 ? 'Cat' : 'Cats'}: #{cats.to_sentence}" : '')
+    }
+  end
+
   private
 
   def set_booking_ref

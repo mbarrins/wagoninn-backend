@@ -1,5 +1,6 @@
 class Api::V1::BookingsController < ApplicationController
   before_action :set_booking, only: [:show]
+  skip_before_action :authorize, only: [:index]
   
   def show
     render json: @booking, include: [:booking_pens => {include: :booking_pen_pets}]
@@ -8,6 +9,8 @@ class Api::V1::BookingsController < ApplicationController
   def index
     if params[:date_from] && params[:date_to]
       render json: {availability: BookingPen.bookings_by_date(date_from: params[:date_from], date_to: params[:date_to])}
+    elsif params[:detail]
+      render json: Booking.daily_detail(date: params[:detail])
     else
       render json: {errors: ['Date range must be specified']}, status: :not_accepted
     end
