@@ -63,7 +63,7 @@ class Booking < ApplicationRecord
       check_out: self.check_out,
       check_out_time: self.check_out_time,
       owner_name: self.owner.name,
-      pens: self.booking_pens.map{|pen| {pen_type: pen.pen_type.name, pet_type: pen.pen_type.pet_type.name, pets: pen.booking_pen_pets.map{|pet| pet.pet.name}}},
+      pens: self.booking_pens.map{|pen| {pen_type: pen.pen_type.name, pet_type: pen.pen_type.pet_type.name, pets: pen.booking_pen_pets.map{|pet| pet.pet.name}.to_sentence}},
       pet_listing: '' + (dogs.length > 0 ? "#{dogs.length == 1 ? 'Dog' : 'Dogs'}: #{dogs.to_sentence}" : '') + (dogs.length > 0 && cats.length > 0 ? ', plus ' : '')  +  (cats.length > 0 ? "#{cats.length == 1 ? 'Cat' : 'Cats'}: #{cats.to_sentence}" : '')
     }
   end
