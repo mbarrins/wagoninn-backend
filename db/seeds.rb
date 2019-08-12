@@ -160,36 +160,36 @@ rates = [
 rates.each{|rate| Rate.find_or_create_by(rate)}
 
 pens = [
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '1 (large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '2 (large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '3 (large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '4 (large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '5 (large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '6 (large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '7 (large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '8 (large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '9 (X-large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '10 (X-large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '11 (X-large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '12 (X-large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '13 (X-large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '14 (X-large door)'},
-  {pen_type: PenType.find_by(name: 'Dog Run'), name: '15 (X-large door)'},
-  {pen_type: PenType.find_by(name: 'Cat Pen'), name: 'Cat Pen'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (1)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (2)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (3)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (4)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (5)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (6)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (7)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (8)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (9)'},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (10)'},
-  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '20 (grooming pen)'},
-  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '21 (grooming pen)'},
-  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '22 (grooming pen)'},
-  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '23 (grooming pen)'}
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '1 (large door)', no: 1},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '2 (large door)', no: 2},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '3 (large door)', no: 3},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '4 (large door)', no: 4},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '5 (large door)', no: 5},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '6 (large door)', no: 6},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '7 (large door)', no: 7},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '8 (large door)', no: 8},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '9 (X-large door)', no: 9},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '10 (X-large door)', no: 10},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '11 (X-large door)', no: 11},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '12 (X-large door)', no: 12},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '13 (X-large door)', no: 13},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '14 (X-large door)', no: 14},
+  {pen_type: PenType.find_by(name: 'Dog Run'), name: '15 (X-large door)', no: 15},
+  {pen_type: PenType.find_by(name: 'Cat Pen'), name: 'Cat Pen', no: 1},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (1)', no: 1},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (2)', no: 2},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (3)', no: 3},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (4)', no: 4},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (5)', no: 5},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (6)', no: 6},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (7)', no: 7},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (8)', no: 8},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (9)', no: 9},
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (10)', no: 10},
+  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '20 (grooming pen)', no: 21},
+  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '21 (grooming pen)', no: 22},
+  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '22 (grooming pen)', no: 23},
+  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '23 (grooming pen)', no: 24}
 ]
 pens.each{|pen| Pen.find_or_create_by(pen)}
 
@@ -304,6 +304,7 @@ end
     booking_pen = BookingPen.find_or_create_by({
       booking: booking, 
       pen_type: PenType.find_by(name: 'Dog Run'),
+      pen_id:  BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Dog Run').id).sample,
       rate_id: rate
     })
 
@@ -322,6 +323,7 @@ end
     booking_pen = BookingPen.find_or_create_by({
       booking: booking, 
       pen_type: PenType.find_by(name: 'Cat Room'),
+      pen_id:  BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Cat Room').id).sample,
       rate_id: rate
     })
 

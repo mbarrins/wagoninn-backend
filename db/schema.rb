@@ -196,6 +196,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
 
   create_table "pens", force: :cascade do |t|
     t.bigint "pen_type_id"
+    t.integer "no"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
