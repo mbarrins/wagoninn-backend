@@ -7,7 +7,7 @@ Rails.application.routes.draw do
         resources :lookups, only: [:index]
         resources :owners, only: [:show, :create, :update]
         resources :pets, only: [:show, :create, :update]
-        resources :bookings, only: [:show, :create, :update]
+        resources :bookings, only: [:index, :show, :create, :update]
     end
   end
 

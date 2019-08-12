@@ -1,5 +1,4 @@
 class Api::V1::PetsController < ApplicationController
-  skip_before_action :authorize, only: [:show]
   before_action :set_pet, only: [:show]
   
   def show

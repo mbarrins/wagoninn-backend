@@ -5,6 +5,7 @@ class CreatePenTypes < ActiveRecord::Migration[5.2]
       t.string :name
       t.integer :max_per_pen
       t.integer :no_pens
+      t.boolean :always_show
     end
   end
 end

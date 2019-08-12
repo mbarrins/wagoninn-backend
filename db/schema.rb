@@ -190,6 +190,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
     t.string "name"
     t.integer "max_per_pen"
     t.integer "no_pens"
+    t.boolean "always_show"
     t.index ["pet_type_id"], name: "index_pen_types_on_pet_type_id"
   end
 

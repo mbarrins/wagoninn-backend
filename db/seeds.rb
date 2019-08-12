@@ -46,7 +46,7 @@ sex.each{|sex| Sex.find_or_create_by(name: sex)}
 sizes = ['X-Small', 'Small', 'Medium', 'Large', 'X-Large']
 sizes.each{|size| Size.find_or_create_by(name: size)}
 
-pet_type = ['Cat', 'Dog', 'Hamster']
+pet_type = ['Dog', 'Cat']
 pet_type.each{|type| PetType.find_or_create_by(name: type)}
 
 immunisation = [
@@ -99,10 +99,10 @@ concerns = [{name: 'Cost', alert: false}, {name: 'Pay on drop off', alert: false
 concerns.each{|concern| Concern.find_or_create_by(concern)}
 
 pen_types = [
-  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Run', max_per_pen: 3, no_pens: 15},
-  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Room', max_per_pen: 2, no_pens: 10},
-  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Pen', max_per_pen: 1, no_pens: 1},
-  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen (overflow only)', max_per_pen: 1, no_pens: 4}
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Run', max_per_pen: 3, no_pens: 15, always_show: true},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Room', max_per_pen: 2, no_pens: 10, always_show: true},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Pen', max_per_pen: 1, no_pens: 1, always_show: false},
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen (overflow only)', max_per_pen: 1, no_pens: 4, always_show: false}
 ]
 pen_types.each{|pen| PenType.find_or_create_by(pen)}
 
