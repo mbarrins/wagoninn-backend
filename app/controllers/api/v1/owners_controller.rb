@@ -1,5 +1,6 @@
 class Api::V1::OwnersController < ApplicationController
   before_action :set_owner, only: [:show]
+  skip_before_action :authorize, only: [:index]
   
   def show
     render json: @owner, include: [:pets, :bookings => {include: [:booking_pens => {include: :booking_pen_pets}]}]
@@ -11,6 +12,15 @@ class Api::V1::OwnersController < ApplicationController
       render json: owner, include: :pets
     else
       render json: {errors: owner.errors.full_messages}, status: :not_accepted
+    end
+  end
+
+  def index
+    byebug
+    if params[:q]
+      render json: Owner.search(query: params[:q])
+    else
+      render json: []
     end
   end
 

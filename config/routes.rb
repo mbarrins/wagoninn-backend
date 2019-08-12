@@ -5,7 +5,7 @@ Rails.application.routes.draw do
         post '/login', to: 'auth#create'
         get '/validate', to: 'auth#validate'
         resources :lookups, only: [:index]
-        resources :owners, only: [:show, :create, :update]
+        resources :owners, only: [:index, :show, :create, :update]
         resources :pets, only: [:show, :create, :update]
         resources :bookings, only: [:index, :show, :create, :update]
     end
