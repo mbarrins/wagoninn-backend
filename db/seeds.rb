@@ -99,10 +99,10 @@ concerns = [{name: 'Cost', alert: false}, {name: 'Pay on drop off', alert: false
 concerns.each{|concern| Concern.find_or_create_by(concern)}
 
 pen_types = [
-  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Run', max_per_pen: 3},
-  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Room', max_per_pen: 2},
-  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Pen', max_per_pen: 1},
-  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen (overflow only)', max_per_pen: 1}
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Run', max_per_pen: 3, no_pens: 15},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Room', max_per_pen: 2, no_pens: 10},
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Pen', max_per_pen: 1, no_pens: 1},
+  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen (overflow only)', max_per_pen: 1, no_pens: 4}
 ]
 pen_types.each{|pen| PenType.find_or_create_by(pen)}
 
