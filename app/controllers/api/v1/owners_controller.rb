@@ -16,7 +16,7 @@ class Api::V1::OwnersController < ApplicationController
   end
 
   def index
-    byebug
+    
     if params[:q]
       render json: Owner.search(query: params[:q])
     else
