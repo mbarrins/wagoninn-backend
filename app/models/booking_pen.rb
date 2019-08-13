@@ -59,12 +59,15 @@ class BookingPen < ApplicationRecord
   end
 
   def self.booked_pens(date:, pen_type_id:)
+    check_in = check_in.class == String ? Date.parse(check_in) : check_in
+    check_out = check_out.class == String ? Date.parse(check_out) : check_out
+
     BookingPen.all.select{|pen| pen.pen_type_id == pen_type_id && pen.booking.check_in <= Date.parse(date) && pen.booking.check_out > Date.parse(date)}.map{|pen| pen.pen_id}
   end
 
   def self.booked_pens_all(check_in:, check_out:, pen_type_id:)
-    check_in = check_in.class == 'String' ? Date.parse(check_in) : check_in
-    check_out = check_out.class == 'String' ? Date.parse(check_out) : check_out
+    check_in = check_in.class == String ? Date.parse(check_in) : check_in
+    check_out = check_out.class == String ? Date.parse(check_out) : check_out
     
     booked = BookingPen.all.select{|pen| pen.pen_type_id == pen_type_id && pen.booking.check_in <= check_out && pen.booking.check_out > check_in}.map{|pen| pen.pen_id}
     empty_pens = booked.reduce(0){|sum, pen| pen == nil ? sum + 1 : sum}
@@ -79,17 +82,25 @@ class BookingPen < ApplicationRecord
     range = (Date.parse(date_from)..Date.parse(date_to)).to_a
 
     range.map do |date| 
-      {date: date, day_of_week: date.strftime('%w').to_i, pens: PenType.all.map do |type|
-        if type.always_show || pens.select{|pen| pen[:pen_type_id] == type.id && pen[:check_in] <= date && pen[:check_out] > date}.length > 0
-          {
-            pen_type: type.name,
-            pet_type: PetType.find(type[:pet_type_id]).name,
-            booked: pens.select{|pen| pen[:pen_type_id] == type.id && pen[:check_in] <= date && pen[:check_out] > date}.length,
-            no_pets: pens.select{|pen| pen[:pen_type_id] == type.id && pen[:check_in] <= date && pen[:check_out] > date}.map{|pen| pen[:pets]}.reduce(:+) || 0,
-            no_pens: type.no_pens
-          }
-        end
-      end.compact}
+      {
+        date: date, 
+        day_of_week: date.strftime('%w').to_i,
+        pens: PenType.all.map do |type|
+          booked = pens.select{|pen| pen[:pen_type_id] == type.id && pen[:check_in] <= date && pen[:check_out] > date}.length
+          no_pets = pens.select{|pen| pen[:pen_type_id] == type.id && pen[:check_in] <= date && pen[:check_out] > date}.map{|pen| pen[:pets]}.reduce(:+) || 0
+
+          if type.always_show || pens.select{|pen| pen[:pen_type_id] == type.id && pen[:check_in] <= date && pen[:check_out] > date}.length > 0
+            {
+              pen_type_id: type.id,
+              pen_type: type.name,
+              pet_type: PetType.find(type[:pet_type_id]).name,
+              booked: booked,
+              no_pets: no_pets,
+              no_pens: type.no_pens,
+              available: type.no_pens - (type.name == 'Cat Room' ? no_pets : booked)
+            }
+          end
+        end.compact}
     end
   end
 end

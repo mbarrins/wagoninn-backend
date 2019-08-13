@@ -8,7 +8,7 @@ class Api::V1::BookingsController < ApplicationController
 
   def index
     if params[:date_from] && params[:date_to]
-      render json: {availability: BookingPen.bookings_by_date(date_from: params[:date_from], date_to: params[:date_to])}
+      render json: {dates: BookingPen.bookings_by_date(date_from: params[:date_from], date_to: params[:date_to]), pens_available: PenType.all.map{|type| {pen_type_id: type.id, pens_available: BookingPen.available_all(check_in: params[:date_from], check_out: params[:date_to], pen_type_id: type.id)}}}
     elsif params[:detail]
       render json: Booking.daily_detail(date: params[:detail])
     else
