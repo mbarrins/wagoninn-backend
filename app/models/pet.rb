@@ -96,7 +96,8 @@ class Pet < ApplicationRecord
             id: shot.id, 
             pet_id: shot.pet_id, 
             immunisation_id: shot.immunisation_id, 
-            validity_id: shot.validity_id, 
+            validity_id: shot.validity_id,
+            effective_date: shot.effective_date,
             expiry_date: shot.expiry_date
           }
         end,
