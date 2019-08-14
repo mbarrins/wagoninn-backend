@@ -1,5 +1,5 @@
 class Api::V1::OwnersController < ApplicationController
-  before_action :set_owner, only: [:show]
+  before_action :set_owner, only: [:show, :update]
   skip_before_action :authorize, only: [:index]
   
   def show
@@ -24,6 +24,15 @@ class Api::V1::OwnersController < ApplicationController
     end
   end
 
+  def update
+    @owner.update(owners_params)
+    if @owner.valid? 
+      render json: @owner, include: :pets
+    else
+      render json: {errors: @owner.errors.full_messages}, status: :not_accepted
+    end
+  end
+
   private
 
   def set_owner
@@ -36,7 +45,4 @@ class Api::V1::OwnersController < ApplicationController
       :agreed_terms, :agreed_date, :notes)
   end
 
-  def owners_pet_params
-    params.require(:owner).permit({pets: [:owner_id, :pet_type_id, :name, :dob, :sex_id, :color_id, :size_id, :breed_id, :spayed_neutered, :notes, :special_needs_fee, :no_return, :inactive]})
-  end
 end
