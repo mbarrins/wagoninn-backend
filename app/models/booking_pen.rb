@@ -38,7 +38,7 @@ class BookingPen < ApplicationRecord
       check_out: self.booking.check_out,
       check_out_time: self.booking.check_out_time,
       owner_name: self.booking.owner.name,
-      pen: self.pen.name,
+      pen: self.pen ? self.pen.name : '',
       pen_no: self.pen.no,
       pet_listing: self.booking_pen_pets.map{|pet| pet.pet.name}.to_sentence
     }
