@@ -1,5 +1,5 @@
 class Api::V1::PetsController < ApplicationController
-  before_action :set_pet, only: [:show]
+  before_action :set_pet, only: [:show, :update]
   
   def show
     render json: @pet.api_info
@@ -22,6 +22,16 @@ class Api::V1::PetsController < ApplicationController
       render json: pet.api_info
     else
       render json: {errors: pet.errors.full_messages}, status: :not_accepted
+    end
+  end
+
+  def update
+    @pet.update(pet_params)
+
+    if @pet.valid?
+      render json: @pet.api_info
+    else
+      render json: {errors: @pet.errors.full_messages}, status: :not_accepted
     end
   end
 
