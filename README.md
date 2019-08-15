@@ -1,24 +1,8 @@
-# README
+# Wag on Inn
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A site to manage bookings for a dog and cat boarding kennel. Users can see the daily boarding details and enter new owners, pets, and bookings. Written using Javascript with React,React-Router, and Redux, with a Ruby-on-Rails API backend.
 
-Things you may want to cover:
 
-* Ruby version
+Author
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+[Maija Barrins](https://github.com/mbarrins)
