@@ -36,6 +36,9 @@ class Booking < ApplicationRecord
     self.update(booking)
     
     if self.valid?
+      remove_pen_ids = booking.booking_pens.map{|booking_pen| booking_pen.id} - booking_pens.map{|booking_pen| booking_pen[:id]}
+      remove_pen_ids.each{|id| BookingPen.find(id).destroy}
+
       booking_pens.each do |pen|
         
         booking_pen = BookingPen.find_by(id: pen[:id])
@@ -48,9 +51,8 @@ class Booking < ApplicationRecord
             rate_id: pen['rate_id']
           )
 
-          removed_pet_ids = booking_pen.booking_pen_pets.map{|booking_pet| booking_pet[:id]} - pen[:booking_pen_pets].map{|booking_pet| booking_pet[:id]}
-
-          removed_pet_ids.each{|id| BookingPenPet.find(id).destroy}
+          remove_pet_ids = booking_pen.booking_pen_pets.map{|booking_pet| booking_pet[:id]} - pen[:booking_pen_pets].map{|booking_pet| booking_pet[:id]}
+          remove_pet_ids.each{|id| BookingPenPet.find(id).destroy}
 
           pen['booking_pen_pets'].each do |pet|
             booking_pet = BookingPenPet.find_by(id: pet[:id])

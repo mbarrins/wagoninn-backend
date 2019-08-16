@@ -24,36 +24,87 @@ class Pet < ApplicationRecord
     if pet.valid?
       
       immunisations.each do |shot|
-        PetImmunisation.create({pet: pet, immunisation_id: shot[:immunisation_id], validity_id: shot[:validity_id], effective_date: shot[:effective_date], expiry_date: shot[:expiry_date]})
+        PetImmunisation.create({
+          pet: pet, 
+          immunisation_id: shot[:immunisation_id], 
+          validity_id: shot[:validity_id], 
+          effective_date: shot[:effective_date], 
+          expiry_date: shot[:expiry_date]
+        })
       end
 
       foods.each do |food|
-        PetFood.find_or_create_by({pet: pet, food_id: food[:food_id], quantity: food[:quantity], measure_id: food[:measure_id], schedule_id: food[:schedule_id]})
+        PetFood.find_or_create_by({
+          pet: pet, 
+          food_id: food[:food_id], 
+          quantity: food[:quantity], 
+          measure_id: food[:measure_id], 
+          schedule_id: food[:schedule_id]
+        })
       end
 
-      health_details.each do |health|
-        PetHealthDetail.find_or_create_by({pet: pet, health_detail_id: health[:health_detail_id], inactive: health[:inactive]})
+      health_details.each do |health_detail|
+        PetHealthDetail.find_or_create_by({
+          pet: pet, 
+          health_detail_id: health_detail[:health_detail_id], 
+          inactive: health_detail[:inactive]
+        })
       end
 
-      special_needs.each do |need|
-        PetSpecialNeed.find_or_create_by({pet: pet, special_need_id: need[:special_need_id], inactive: need[:inactive]})
+      special_needs.each do |special_need|
+        PetSpecialNeed.find_or_create_by({
+          pet: pet, 
+          special_need_id: special_need[:special_need_id], 
+          inactive: special_need[:inactive]
+        })
       end
 
-      medications.each do |med|
-        PetMedication.find_or_create_by({pet: pet, medication_id: med[:medication_id], dose_quantity: med[:dose_quantity], dose_id: med[:dose_id], schedule_id: med[:schedule_id]})
+      medications.each do |medication|
+        PetMedication.find_or_create_by({
+          pet: pet, 
+          medication_id: medication[:medication_id], 
+          dose_quantity: medication[:dose_quantity], 
+          dose_id: medication[:dose_id], 
+          schedule_id: medication[:schedule_id]
+        })
       end
 
-      sociabilities.each do |soc|
-        PetSociability.find_or_create_by({pet: pet, sociability_id: soc[:sociability_id], inactive: soc[:inactive]})
+      sociabilities.each do |sociability|
+        PetSociability.find_or_create_by({
+          pet: pet, 
+          sociability_id: sociability[:sociability_id], 
+          inactive: sociability[:inactive]
+        })
       end
 
       issues.each do |issue|
-        PetIssue.find_or_create_by({pet: pet, issue_id: issue[:issue_id], inactive: issue[:inactive]})
+        PetIssue.find_or_create_by({
+          pet: pet, 
+          issue_id: issue[:issue_id], 
+          inactive: issue[:inactive]
+        })
       end
 
     end
 
     pet
+
+  end
+
+  def update_with_all(pet:, immunisations:, foods:, health_details:, special_needs:, medications:, sociabilities:, issues:)
+    self.update(pet)
+    
+    if self.valid?
+      PetImmunisation.update_with_pet(pet: self, immunisations: immunisations)
+      PetFood.update_with_pet(pet: self, foods: foods)
+      PetHealthDetail.update_with_pet(pet: self, health_details: health_details)
+      PetSpecialNeed.update_with_pet(pet: self, special_needs: special_needs)
+      PetMedication.update_with_pet(pet: self, medications: medications)
+      PetSociability.update_with_pet(pet: self, sociabilities: sociabilities)
+      PetIssue.update_with_pet(pet: self, issues: issues)
+    end
+
+    self
 
   end
 
