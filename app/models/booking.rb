@@ -30,6 +30,67 @@ class Booking < ApplicationRecord
     booking
   end
 
+  def update_with_all(booking:, booking_pens:)
+    errors = []
+
+    self.update(booking)
+    
+    if self.valid?
+      booking_pens.each do |pen|
+        
+        booking_pen = BookingPen.find_by(id: pen[:id])
+
+        if booking_pen 
+          
+          booking_pen.update(
+            pen_type_id: pen['pen_type_id'],
+            pen_id: pen['pen_id'],
+            rate_id: pen['rate_id']
+          )
+
+          removed_pet_ids = booking_pen.booking_pen_pets.map{|booking_pet| booking_pet[:id]} - pen[:booking_pen_pets].map{|booking_pet| booking_pet[:id]}
+
+          removed_pet_ids.each{|id| BookingPenPet.find(id).destroy}
+
+          pen['booking_pen_pets'].each do |pet|
+            booking_pet = BookingPenPet.find_by(id: pet[:id])
+
+            if booking_pet
+              booking_pet.update(
+                pet_id: pet['pet_id'],
+                special_needs_fee: pet['special_needs_fee']
+              )
+            else 
+              BookingPenPet.find_or_create_by({
+                booking_pen: booking_pen,
+                pet_id: pet['pet_id'],
+                special_needs_fee: pet['special_needs_fee']
+              })
+            end
+          end  
+
+        else
+
+          booking_pen = BookingPen.find_or_create_by({
+            booking: self,
+            pen_type_id: pen['pen_type_id'],
+            pen_id: pen['pen_id'],
+            rate_id: pen['rate_id']
+          })
+
+          pen['booking_pen_pets'].each do |pet|
+            BookingPenPet.find_or_create_by({
+              booking_pen: booking_pen,
+              pet_id: pet['pet_id'],
+              special_needs_fee: pet['special_needs_fee']
+            })
+          end
+        end
+      end
+    end
+    self
+  end
+
   def self.daily_detail(date:)
     {
       todays_pens: BookingPen.daily_detail(date: date),
