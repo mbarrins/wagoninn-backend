@@ -1,5 +1,5 @@
 class Api::V1::BookingsController < ApplicationController
-  before_action :set_booking, only: [:show]
+  before_action :set_booking, only: [:show, :update]
   skip_before_action :authorize, only: [:index]
   
   def show
@@ -24,6 +24,16 @@ class Api::V1::BookingsController < ApplicationController
       render json: booking, include: [:booking_pens => {include: :booking_pen_pets}]
     else
       render json: {errors: booking.errors.full_messages}, status: :not_accepted
+    end
+  end
+
+  def update
+    @booking.update(bookings_params)
+
+    if @booking.valid? 
+      render json: @booking, include: [:booking_pens => {include: :booking_pen_pets}]
+    else
+      render json: {errors: @booking.errors.full_messages}, status: :not_accepted
     end
   end
 
