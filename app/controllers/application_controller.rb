@@ -38,4 +38,9 @@ class ApplicationController < ActionController::API
           return render json: { error: 'you must be logged in'}, status: :unauthorized
       end
   end
+
+  def fallback_index_html
+    render :file => 'public/index.html' 
+  end
+  
 end
