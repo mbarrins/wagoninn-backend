@@ -4,6 +4,21 @@ class Booking < ApplicationRecord
   has_many :booking_pens
   after_create :set_booking_ref
 
+  def self.income_by_day(date:)
+    date_bookings = Booking.select{|booking| booking.check_in <= date && (booking.check_out > date || (booking.check_out == date && booking.check_out_time == 'PM'))}
+    date_bookings.map{|booking| booking.booking_pens}.flatten.map{|pen| pen.rate.amount.to_f}.reduce(:+) || 0
+  end
+
+  def self.income_by_month(month:, year:)
+    range = (Date.parse("#{year}-#{month}-01")..(Date.parse("#{month.to_i == 12 ? (year.to_i + 1).to_s : year}-#{month.to_i == 12 ? 1 : month.to_i + 1}-01")-1)).to_a
+    range.map{|date| Booking.income_by_day(date: date)}.reduce(:+)
+  end
+
+  def self.year_income_by_month(year:)
+    months = ("#{year}-01-01".to_date.."#{year}-12-31".to_date).map(&:beginning_of_month).uniq
+    months.map{|month| {month: month.strftime('%B'), amount: Booking.income_by_month(month: month.strftime('%m'), year: year)}}
+  end
+
   def self.create_with_all(booking:, booking_pens:)
 
     booking = Booking.find_or_create_by(booking)
@@ -98,18 +113,18 @@ class Booking < ApplicationRecord
       todays_pens: BookingPen.daily_detail(date: date),
       today_pick_up: 
         {
-          am: Booking.all.select{|booking| booking.check_out == Date.parse(date) && booking.check_out_time == 'AM'}.map{|booking| booking.booking_detail},
-          pm: Booking.all.select{|booking| booking.check_out === Date.parse(date) && booking.check_out_time == 'PM'}.map{|booking| booking.booking_detail}
+          am: Booking.select{|booking| booking.check_out == Date.parse(date) && booking.check_out_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: Booking.select{|booking| booking.check_out === Date.parse(date) && booking.check_out_time == 'PM'}.map{|booking| booking.booking_detail}
         },
       today_drop_off: 
         {
-          am: Booking.all.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
-          pm: Booking.all.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
+          am: Booking.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: Booking.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
         },
       tomorrow_drop_off: 
         {
-          am: Booking.all.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
-          pm: Booking.all.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
+          am: Booking.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: Booking.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
         }
     }
   end
