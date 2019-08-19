@@ -1,6 +1,5 @@
 class Api::V1::BookingsController < ApplicationController
   before_action :set_booking, only: [:show, :update]
-  skip_before_action :authorize, only: [:index]
   
   def show
     render json: @booking, include: [:booking_pens => {include: :booking_pen_pets}]

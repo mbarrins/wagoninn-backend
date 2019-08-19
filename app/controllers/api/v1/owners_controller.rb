@@ -1,6 +1,5 @@
 class Api::V1::OwnersController < ApplicationController
   before_action :set_owner, only: [:show, :update]
-  skip_before_action :authorize, only: [:index]
   
   def show
     render json: @owner, include: [:pets, :bookings => {include: [:booking_pens => {include: :booking_pen_pets}]}]
