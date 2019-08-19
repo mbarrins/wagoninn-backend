@@ -89,7 +89,7 @@ measures.each{|measure| Measure.find_or_create_by(name: measure)}
 phone_types = ['Home', 'Cell', 'Work']
 phone_types.each{|type| PhoneType.find_or_create_by(name: type)}
 
-booking_statuses = ['Quote', 'Reservation', 'Active', 'Completed']
+booking_statuses = ['Quote', 'Reservation', 'Active', 'Cancelled', 'Completed']
 booking_statuses.each{|status| BookingStatus.find_or_create_by(name: status)}
 
 issues = [{name: 'Strong Puller', alert: false}, {name: 'Excessive Barker', alert: true}, {name: 'Chews Blankets', alert: true}, {name: 'Excessive Digging', alert: true}]
@@ -286,7 +286,8 @@ end
                     elsif check_in_date <= Date.today
                       BookingStatus.find_by(name: 'Active')
                     else
-                      ([BookingStatus.find_by(name: 'Reservation')]*9 + [BookingStatus.find_by(name: 'Quote')]).sample
+                      BookingStatus.find_by(name: 'Reservation')
+                      # ([BookingStatus.find_by(name: 'Booking')]*9 + [BookingStatus.find_by(name: 'Quote')]).sample
                     end
 
   booking = Booking.find_or_create_by(
@@ -304,7 +305,7 @@ end
     booking_pen = BookingPen.find_or_create_by({
       booking: booking, 
       pen_type: PenType.find_by(name: 'Dog Run'),
-      pen_id:  BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Dog Run').id).sample,
+      pen_id: booking.check_in < Date.today ? BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Dog Run').id).sample : nil,
       rate_id: rate
     })
 

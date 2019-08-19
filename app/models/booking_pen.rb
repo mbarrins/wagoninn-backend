@@ -20,12 +20,18 @@ class BookingPen < ApplicationRecord
   end
 
   def self.daily_detail(date:)
-    todays_pens = BookingPen.all.select{|pen| pen.booking.check_in <= Date.parse(date) && pen.booking.check_out > Date.parse(date)}
+    todays_pens = BookingPen.all.select{|pen| pen.booking.booking_status != 'Cancelled' && pen.booking.check_in <= Date.parse(date) && (pen.booking.check_out > Date.parse(date) || (pen.booking.check_out >= Date.parse(date) && pen.booking.booking_status.name == 'Active'))}
 
     PenType.all.map do |type|
-      [type.name.gsub(/\s+/, ""), todays_pens.select{|pen| pen.pen_type_id == type.id}.map do |pen|
-        pen.booking_pen_detail
-      end]
+      if type.name === 'Dog Run'
+        [type.name.gsub(/\s+/, ""), todays_pens.select{|pen| pen.pen_type_id == type.id && pen.pen_id}.map do |pen|
+          [pen.pen_id, pen.booking_pen_detail]
+        end.to_h]
+      else 
+        [type.name.gsub(/\s+/, ""), todays_pens.select{|pen| pen.pen_type_id == type.id}.map do |pen|
+          pen.booking_pen_detail
+        end]
+      end
     end.to_h
 
   end
@@ -38,8 +44,9 @@ class BookingPen < ApplicationRecord
       check_out: self.booking.check_out,
       check_out_time: self.booking.check_out_time,
       owner_name: self.booking.owner.name,
+      status: self.booking.booking_status.name,
       pen: self.pen ? self.pen.name : '',
-      pen_no: self.pen.no,
+      pen_no: self.pen ? self.pen.no : '',
       pet_listing: self.booking_pen_pets.map{|pet| pet.pet.name}.to_sentence
     }
   end
@@ -55,7 +62,11 @@ class BookingPen < ApplicationRecord
     all_pens = Pen.all.select{|pen| pen.pen_type_id == pen_type_id}.map{|pen| pen.id}
     booked = BookingPen.booked_pens_all(check_in: check_in, check_out: check_out, pen_type_id: pen_type_id)
 
-    all_pens - booked 
+    all_pens - booked
+  end
+
+  def self.available_pens(check_in:, check_out:, pen_type_id:)
+    BookingPen.available_all(check_in: check_in, check_out: check_out, pen_type_id: pen_type_id).map{|pen_id| Pen.find(pen_id)}
   end
 
   def self.booked_pens(date:, pen_type_id:)
@@ -68,9 +79,8 @@ class BookingPen < ApplicationRecord
   def self.booked_pens_all(check_in:, check_out:, pen_type_id:)
     check_in = check_in.class == String ? Date.parse(check_in) : check_in
     check_out = check_out.class == String ? Date.parse(check_out) : check_out
-    
-    booked = BookingPen.all.select{|pen| pen.pen_type_id == pen_type_id && pen.booking.check_in <= check_out && pen.booking.check_out > check_in}.map{|pen| pen.pen_id}
-    empty_pens = booked.reduce(0){|sum, pen| pen == nil ? sum + 1 : sum}
+      
+    booked = BookingPen.all.select{|pen| pen.pen_type_id == pen_type_id && pen.booking.check_in <= check_out && pen.booking.check_out > check_in && pen.pen_id}.map{|pen| pen.pen_id}
 
     booked.uniq
   end

@@ -22,7 +22,8 @@ class Api::V1::LookupsController < ApplicationController
       concerns: Concern.api_info,
       penTypes: PenType.all,
       rates: Rate.api_info,
-      currentRates: Rate.all_current
+      currentRates: Rate.all_current,
+      dogPens: Pen.select{|pen| pen.pen_type.name === 'Dog Run'}
       }
     }
   end

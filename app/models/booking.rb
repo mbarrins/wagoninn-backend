@@ -47,11 +47,11 @@ class Booking < ApplicationRecord
 
   def update_with_all(booking:, booking_pens:)
     errors = []
-
+    
     self.update(booking)
     
     if self.valid?
-      remove_pen_ids = booking.booking_pens.map{|booking_pen| booking_pen.id} - booking_pens.map{|booking_pen| booking_pen[:id]}
+      remove_pen_ids = self.booking_pens.map{|booking_pen| booking_pen.id} - booking_pens.map{|booking_pen| booking_pen[:id]}
       remove_pen_ids.each{|id| BookingPen.find(id).destroy}
 
       booking_pens.each do |pen|
@@ -111,6 +111,11 @@ class Booking < ApplicationRecord
   def self.daily_detail(date:)
     {
       todays_pens: BookingPen.daily_detail(date: date),
+      available_pens: BookingPen.available_pens(
+        check_in: Date.today, 
+        check_out: Booking.select{|booking| booking.check_in <= Date.today+1 && ['Active', 'Reservation'].include?(booking.booking_status.name)}.map{|booking| booking.check_out}.max, 
+        pen_type_id: PenType.find_by(name: 'Dog Run').id
+      ),
       today_pick_up: 
         {
           am: Booking.select{|booking| booking.check_out == Date.parse(date) && booking.check_out_time == 'AM'}.map{|booking| booking.booking_detail},
@@ -130,9 +135,9 @@ class Booking < ApplicationRecord
   end
 
   def booking_detail
-    pets = self.booking_pens.map{|pen| pen.booking_pen_pets.map{|pet| {pet_type: pet.pet.pet_type.name, pet_name: pet.pet.name}}}.flatten
-    dogs = pets.select{|pet| pet[:pet_type] == 'Dog'}.map{|pet| pet[:pet_name]}
-    cats = pets.select{|pet| pet[:pet_type] == 'Cat'}.map{|pet| pet[:pet_name]}
+    pets = self.booking_pens.map{|pen| pen.booking_pen_pets.map{|pet| {id: pet.pet.id, pet_type: pet.pet.pet_type.name, pet_name: pet.pet.name}}}.flatten
+    dogs = pets.select{|pet| pet[:pet_type] == 'Dog'}.sort_by{|pet| pet[:id]}.map{|pet| pet[:pet_name]}
+    cats = pets.select{|pet| pet[:pet_type] == 'Cat'}.sort_by{|pet| pet[:id]}.map{|pet| pet[:pet_name]}
 
     {
       id: self.id,
@@ -141,7 +146,25 @@ class Booking < ApplicationRecord
       check_out: self.check_out,
       check_out_time: self.check_out_time,
       owner_name: self.owner.name,
-      pens: self.booking_pens.map{|pen| {pen_type: pen.pen_type.name, pet_type: pen.pen_type.pet_type.name, pets: pen.booking_pen_pets.map{|pet| pet.pet.name}.to_sentence}},
+      status: self.booking_status.name,
+      pens: self.booking_pens.sort_by{|pen| pen.id}.map{|pen| {
+        id: pen.id,
+        pen_id: pen.pen_id ? pen.pen_id : '',
+        pen_type: pen.pen_type.name, 
+        pet_type: pen.pen_type.pet_type.name, 
+        pets: pen.booking_pen_pets.sort_by{|pet| pet.id}.map{|pet| pet.pet.name}.to_sentence,
+        pets_detail: pen.booking_pen_pets.sort{|pet| pet.id}.map{|pet| pet.pet.pet_type.name == 'Dog' ? {
+          id: pet.pet.id, 
+          name: pet.pet.name, 
+          breed: pet.pet.breed.name,
+          size: pet.pet.size.name
+        } : {
+          id: pet.pet.id, 
+          name: pet.pet.name, 
+          color: pet.pet.color.name, 
+          size: pet.pet.size.name
+        }}
+      }},
       pet_listing: '' + (dogs.length > 0 ? "#{dogs.length == 1 ? 'Dog' : 'Dogs'}: #{dogs.to_sentence}" : '') + (dogs.length > 0 && cats.length > 0 ? ', plus ' : '')  +  (cats.length > 0 ? "#{cats.length == 1 ? 'Cat' : 'Cats'}: #{cats.to_sentence}" : '')
     }
   end

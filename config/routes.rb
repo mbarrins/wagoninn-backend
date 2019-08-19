@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         resources :owners, only: [:index, :show, :create, :update]
         resources :pets, only: [:show, :create, :update]
         resources :bookings, only: [:index, :show, :create, :update]
+        resources :booking_pens, only: [:update]
     end
   end
 
