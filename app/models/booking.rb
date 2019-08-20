@@ -132,27 +132,42 @@ class Booking < ApplicationRecord
   end
 
   def self.daily_detail(date:)
+    bookings = Booking.select{|booking| booking.booking_status != 'Cancelled' && booking.check_in <= Date.parse(date) && booking.check_out >= Date.parse(date)}
+    todays_pens = bookings.reject{|booking| booking.booking_status == 'Completed'}.map{|booking| booking.booking_pens}.flatten
+
     {
-      todays_pens: BookingPen.daily_detail(date: date),
+      todays_pens: 
+        PenType.all.map do |type|
+          if type.name === 'Dog Run'
+            [type.name.gsub(/\s+/, ""), todays_pens.select{|pen| pen.pen_type_id == type.id && pen.pen_id}.map do |pen|
+              [pen.pen_id, pen.booking_pen_detail]
+            end.to_h]
+          else 
+            [type.name.gsub(/\s+/, ""), todays_pens.select{|pen| pen.pen_type_id == type.id}.map do |pen|
+              pen.booking_pen_detail
+            end]
+          end
+        end.to_h,
+
       available_pens: BookingPen.available_pens(
         check_in: Date.today, 
-        check_out: Booking.select{|booking| booking.check_in <= Date.today+1 && ['Active', 'Reservation'].include?(booking.booking_status.name)}.map{|booking| booking.check_out}.max, 
+        check_out: bookings.select{|booking| booking.check_in <= Date.today+1 && ['Active', 'Reservation'].include?(booking.booking_status.name)}.map{|booking| booking.check_out}.max || Date.today, 
         pen_type_id: PenType.find_by(name: 'Dog Run').id
       ),
       today_pick_up: 
         {
-          am: Booking.select{|booking| booking.check_out == Date.parse(date) && booking.check_out_time == 'AM'}.map{|booking| booking.booking_detail},
-          pm: Booking.select{|booking| booking.check_out === Date.parse(date) && booking.check_out_time == 'PM'}.map{|booking| booking.booking_detail}
+          am: bookings.select{|booking| booking.check_out == Date.parse(date) && booking.check_out_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: bookings.select{|booking| booking.check_out == Date.parse(date) && booking.check_out_time == 'PM'}.map{|booking| booking.booking_detail}
         },
       today_drop_off: 
         {
-          am: Booking.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
-          pm: Booking.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
+          am: bookings.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: bookings.select{|booking| booking.check_in == Date.parse(date) && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
         },
       tomorrow_drop_off: 
         {
-          am: Booking.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
-          pm: Booking.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
+          am: bookings.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'AM'}.map{|booking| booking.booking_detail},
+          pm: bookings.select{|booking| booking.check_in == Date.parse(date)+1 && booking.check_in_time == 'PM'}.map{|booking| booking.booking_detail}
         }
     }
   end
