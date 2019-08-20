@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  belongs_to :user_type
   has_secure_password
   belongs_to :person, :polymorphic => true
 
