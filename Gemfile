@@ -27,6 +27,9 @@ gem "jwt"
 #Security confirguration for ENV
 gem 'figaro'
 
+#json rendering
+gem 'oj'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
