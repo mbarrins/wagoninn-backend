@@ -4,19 +4,42 @@ class Booking < ApplicationRecord
   has_many :booking_pens
   after_create :set_booking_ref
 
-  def self.income_by_day(date:)
+  def self.income_by_date(date:)
     date_bookings = Booking.select{|booking| booking.check_in <= date && (booking.check_out > date || (booking.check_out == date && booking.check_out_time == 'PM'))}
     date_bookings.map{|booking| booking.booking_pens}.flatten.map{|pen| pen.rate.amount.to_f}.reduce(:+) || 0
   end
 
   def self.income_by_month(month:, year:)
-    range = (Date.parse("#{year}-#{month}-01")..(Date.parse("#{month.to_i == 12 ? (year.to_i + 1).to_s : year}-#{month.to_i == 12 ? 1 : month.to_i + 1}-01")-1)).to_a
-    range.map{|date| Booking.income_by_day(date: date)}.reduce(:+)
+    date_from = Date.parse("#{year}-#{month}-01")
+    date_to = Date.parse("#{month.to_i == 12 ? (year.to_i + 1).to_s : year}-#{month.to_i == 12 ? 1 : month.to_i + 1}-01")-1
+
+    Booking.select{|booking| booking.check_in <= date_to && booking.check_out >= date_from}.map{|booking| booking.fees_in_period(date_from: date_from, date_to: date_to)}.reduce(:+)
   end
 
   def self.year_income_by_month(year:)
     months = ("#{year}-01-01".to_date.."#{year}-12-31".to_date).map(&:beginning_of_month).uniq
     months.map{|month| {month: month.strftime('%B'), amount: Booking.income_by_month(month: month.strftime('%m'), year: year)}}
+  end
+
+  def daily_fee
+    self.booking_pens.map{|pen| pen.rate.amount.to_f}.reduce(:+)
+  end
+
+  def duration
+    (self.check_out - self.check_in).to_i + (self.check_out_time == 'PM' ? 1 : 0)
+  end
+
+  def days_in_period(date_from:, date_to:)
+    date_from = date_from.class == String ? Date.parse(date_from) : date_from
+    date_to = date_to.class == String ? Date.parse(date_to) : date_to
+
+    days = self.duration
+    days -= self.check_in < date_from ? (date_from - self.check_in).to_i : 0
+    days -= self.check_out > date_to ? ((self.check_out_time == 'PM' ? self.check_out : (self.check_out - 1)) - date_to).to_i : 0
+  end
+
+  def fees_in_period(date_from:, date_to:)
+    self.days_in_period(date_from: date_from, date_to: date_to) * self.daily_fee
   end
 
   def self.create_with_all(booking:, booking_pens:)
