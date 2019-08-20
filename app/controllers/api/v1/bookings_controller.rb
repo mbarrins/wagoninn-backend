@@ -7,11 +7,21 @@ class Api::V1::BookingsController < ApplicationController
 
   def index
     if params[:year]
-      render json: Booking.year_income_by_month(year: params[:year])
+      render json: {years: [{year: params[:year], months: Booking.year_income_by_month(year: params[:year])}]}
     elsif params[:date_from] && params[:date_to]
       render json: {dates: BookingPen.bookings_by_date(date_from: params[:date_from], date_to: params[:date_to]), pens_available: PenType.all.map{|type| {pen_type_id: type.id, pens_available: BookingPen.available_all(check_in: params[:date_from], check_out: params[:date_to], pen_type_id: type.id)}}}
     elsif params[:detail]
       render json: Booking.daily_detail(date: params[:detail])
+    elsif params[:compare_years]
+      year = params[:compare_years].to_i
+      years = [year-2, year-1, year]
+
+      render json: {years: years.map do |year|
+          {
+            year: year, 
+            months: Booking.year_income_by_month(year: year)
+          }
+      end}
     else
       render json: {errors: ['Date range must be specified']}, status: :not_accepted
     end
