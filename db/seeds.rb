@@ -283,9 +283,6 @@ Owner.select{|owner| owner.pets.length == 0}.each do |owner|
 end
 
 300.times do 
-  check_in_date = rand(Date.new(2018,12,1)..Date.new(2019,10,31))
-  check_out_date = check_in_date + [2,3,4,5,6,7,8,9,10,11,12,13,14].sample
-  
   owner = Owner.all.sample
   dogs = owner.pets.select{|pet| pet.pet_type.name === 'Dog'}
   dog_pens = (dogs.length / 2) + (dogs.length % 2)
@@ -294,16 +291,28 @@ end
   cat_pens = (cats.length / 2) + (cats.length % 2)
   cat_rates = cat_rates = ([5] * (cats.length/2)) + ([4] * (cats.length % 2))
 
-  booking_status =  if check_out_date < Date.today
-                      BookingStatus.find_by(name: 'Completed')
-                    elsif check_in_date < Date.today
-                      BookingStatus.find_by(name: 'Active')
-                    else
-                      BookingStatus.find_by(name: 'Reservation')
-                      # ([BookingStatus.find_by(name: 'Booking')]*9 + [BookingStatus.find_by(name: 'Quote')]).sample
-                    end
+  booking = true
+  
+  while booking 
+    check_in_date = rand(Date.new(2018,12,1)..Date.new(2019,10,31))
+    check_out_date = check_in_date + [2,3,4,5,6,7,8,9,10,11,12,13,14].sample
 
-  booking = Booking.find_or_create_by(
+    booking = Booking.find_by({
+      owner_id: owner.id, 
+      check_in: check_in_date,
+      check_out: check_out_date
+    })
+  end
+
+  booking_status =  if check_out_date < Date.today
+    BookingStatus.find_by(name: 'Completed')
+  elsif check_in_date < Date.today
+    BookingStatus.find_by(name: 'Active')
+  else
+    BookingStatus.find_by(name: 'Reservation')
+  end
+
+  booking = Booking.create(
     {
       owner_id: owner.id, 
       check_in: check_in_date, 
@@ -315,7 +324,7 @@ end
   )
   
   dog_rates.each_with_index do |rate, index|
-    booking_pen = BookingPen.find_or_create_by({
+    booking_pen = BookingPen.create({
       booking: booking, 
       pen_type: PenType.find_by(name: 'Dog Run'),
       pen_id: booking.check_in < Date.today ? BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Dog Run').id).sample : nil,
@@ -324,7 +333,7 @@ end
 
     count = 0
     rate.times do
-      BookingPenPet.find_or_create_by({
+      BookingPenPet.create({
         booking_pen: booking_pen,
         pet: dogs[count + (index*2)],
         special_needs_fee: false
@@ -334,7 +343,7 @@ end
   end
 
   cat_rates.each_with_index do |rate, index|
-    booking_pen = BookingPen.find_or_create_by({
+    booking_pen = BookingPen.create({
       booking: booking, 
       pen_type: PenType.find_by(name: 'Cat Room'),
       pen_id:  BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Cat Room').id).sample,
@@ -342,8 +351,8 @@ end
     })
 
     count = 0
-    rate.times do
-      BookingPenPet.find_or_create_by({
+    (rate == 5 ? 2 : 1).times do
+      BookingPenPet.create({
         booking_pen: booking_pen,
         pet: cats[count + (index*2)],
         special_needs_fee: false
