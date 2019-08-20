@@ -21,6 +21,7 @@ class CreateOwners < ActiveRecord::Migration[5.2]
       t.boolean :agreed_terms
       t.date :agreed_date
       t.text :notes
+      t.text :online_access_code
 
       t.timestamps
     end

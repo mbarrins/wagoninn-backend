@@ -1,7 +1,10 @@
 class Owner < ApplicationRecord
+  has_one :user, :as => :person, required: false
   has_many :pets
   has_many :bookings
   has_many :owner_concerns
+
+  validates :first_name, :last_name, :email, presence: true
 
   def as_json(options={})
     super(options).map{|k,v| [k, v === nil ? '' : v]}.to_h

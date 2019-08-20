@@ -1,6 +1,6 @@
-class CreateUserTypes < ActiveRecord::Migration[5.2]
+class CreateEmployeeTypes < ActiveRecord::Migration[5.2]
   def change
-    create_table :user_types do |t|
+    create_table :employee_types do |t|
       t.string :position
       t.boolean :allow_override
 

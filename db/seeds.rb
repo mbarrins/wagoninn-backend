@@ -7,25 +7,21 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 require 'faker'
 
-user_types = [
-  {position: 'Owner', allow_override: true}, 
+employee_types = [
   {position: 'Manager', allow_override: true}, 
   {position: 'Employee', allow_override: false}
 ]
-user_types.each{|type| UserType.find_or_create_by(type)} 
+employee_types.each{|type| EmployeeType.find_or_create_by(type)}
 
-user = {
-  user_type: UserType.find_by(position: 'Manager'),
-  username: 'user1',
-  password: 'password',
+employee = {
   first_name: 'First',
   last_name: 'Last',
   job_title: 'Manager',
-  email: 'email@email.com'
+  email: 'email@email.com',
+  employee_type: EmployeeType.find_by(position: 'Manager')
 }
 
-check_user_exists = User.find_by(username: user[:username])
-User.create(user) if !check_user_exists
+Employee.find_or_create_by(employee)
 
 color = ['Black', 'White', 'Orange', 'Grey', 'Calico']
 color.each{|color| Color.find_or_create_by(name: color)}
@@ -66,7 +62,6 @@ health_details.each{|detail| HealthDetail.find_or_create_by(detail)}
 
 special_needs = [{name: 'Agressive eater', action_needed: 'Cannot be fed around other dogs', alert: true}]
 special_needs.each{|need| SpecialNeed.find_or_create_by(need)}
-# Special Needs - action needed on dog as specific to the dog, not the condition?
 
 sociabilities = [{name: 'Friendly', alert: false}, {name: 'Playful', alert: false}, {name: 'Old', alert: false}, {name: 'Cannot be with other dogs', alert: true}]
 sociabilities.each{|soc| Sociability.find_or_create_by(soc)}
@@ -100,9 +95,9 @@ concerns.each{|concern| Concern.find_or_create_by(concern)}
 
 pen_types = [
   {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Run', max_per_pen: 3, no_pens: 15, always_show: true},
-  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Room', max_per_pen: 2, no_pens: 10, always_show: true},
-  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Pen', max_per_pen: 1, no_pens: 1, always_show: false},
-  {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen (overflow only)', max_per_pen: 1, no_pens: 4, always_show: false}
+  {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Room', max_per_pen: 2, no_pens: 10, always_show: true}
+  # {pet_type: PetType.find_by(name: 'Cat'), name: 'Cat Pen', max_per_pen: 1, no_pens: 1, always_show: false},
+  # {pet_type: PetType.find_by(name: 'Dog'), name: 'Dog Grooming Pen (overflow only)', max_per_pen: 1, no_pens: 4, always_show: false}
 ]
 pen_types.each{|pen| PenType.find_or_create_by(pen)}
 
@@ -141,21 +136,21 @@ rates = [
     desc: 'Cat Room two cats from same family',
     amount: 33,
     effective_from: '2019-01-01'
-  },
-  { 
-    pen_type: PenType.find_by(name: 'Cat Pen'),
-    no: 1,
-    desc: 'Cat Pen single cat',
-    amount: 30,
-    effective_from: '2019-01-01'
-  },
-  { 
-    pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'),
-    no: 1,
-    desc: 'Dog Grooming Pen single dog',
-    amount: 30,
-    effective_from: '2019-01-01'
   }
+  # { 
+  #   pen_type: PenType.find_by(name: 'Cat Pen'),
+  #   no: 1,
+  #   desc: 'Cat Pen single cat',
+  #   amount: 30,
+  #   effective_from: '2019-01-01'
+  # },
+  # { 
+  #   pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'),
+  #   no: 1,
+  #   desc: 'Dog Grooming Pen single dog',
+  #   amount: 30,
+  #   effective_from: '2019-01-01'
+  # }
 ]
 rates.each{|rate| Rate.find_or_create_by(rate)}
 
@@ -175,7 +170,7 @@ pens = [
   {pen_type: PenType.find_by(name: 'Dog Run'), name: '13 (X-large door)', no: 13},
   {pen_type: PenType.find_by(name: 'Dog Run'), name: '14 (X-large door)', no: 14},
   {pen_type: PenType.find_by(name: 'Dog Run'), name: '15 (X-large door)', no: 15},
-  {pen_type: PenType.find_by(name: 'Cat Pen'), name: 'Cat Pen', no: 1},
+  # {pen_type: PenType.find_by(name: 'Cat Pen'), name: 'Cat Pen', no: 1},
   {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (1)', no: 1},
   {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (2)', no: 2},
   {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (3)', no: 3},
@@ -185,17 +180,17 @@ pens = [
   {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (7)', no: 7},
   {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (8)', no: 8},
   {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (9)', no: 9},
-  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (10)', no: 10},
-  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '20 (grooming pen)', no: 21},
-  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '21 (grooming pen)', no: 22},
-  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '22 (grooming pen)', no: 23},
-  {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '23 (grooming pen)', no: 24}
+  {pen_type: PenType.find_by(name: 'Cat Room'), name: 'Cat Room (10)', no: 10}
+  # {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '20 (grooming pen)', no: 21},
+  # {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '21 (grooming pen)', no: 22},
+  # {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '22 (grooming pen)', no: 23},
+  # {pen_type: PenType.find_by(name: 'Dog Grooming Pen (overflow only)'), name: '23 (grooming pen)', no: 24}
 ]
 pens.each{|pen| Pen.find_or_create_by(pen)}
 
 Faker::Config.locale = 'en-US'
 
-30.times do 
+75.times do 
   agreed = rand(100) > 30
   address_lines = rand(3) + 1
 
@@ -222,7 +217,25 @@ Faker::Config.locale = 'en-US'
   })
 end
 
-50.times do 
+users = [
+  {
+    username: 'user1',
+    password: 'password',
+    person: Employee.first
+  },
+  {
+    username: 'owner1',
+    password: 'password',
+    person: Owner.all.sample
+  }
+]
+
+users.each do |user|
+  check_user_exists = User.find_by(username: user[:username])
+  User.create(user) if !check_user_exists
+end
+
+200.times do 
   dog = rand(100) > 20
   spayed_neutered = rand(100) > 20
 
@@ -269,8 +282,8 @@ Owner.select{|owner| owner.pets.length == 0}.each do |owner|
   end
 end
 
-100.times do 
-  check_in_date = rand(Date.new(2019,7,1)..Date.new(2019,10,01))
+300.times do 
+  check_in_date = rand(Date.new(2018,12,1)..Date.new(2019,10,31))
   check_out_date = check_in_date + [2,3,4,5,6,7,8,9,10,11,12,13,14].sample
   
   owner = Owner.all.sample
@@ -283,7 +296,7 @@ end
 
   booking_status =  if check_out_date < Date.today
                       BookingStatus.find_by(name: 'Completed')
-                    elsif check_in_date <= Date.today
+                    elsif check_in_date < Date.today
                       BookingStatus.find_by(name: 'Active')
                     else
                       BookingStatus.find_by(name: 'Reservation')

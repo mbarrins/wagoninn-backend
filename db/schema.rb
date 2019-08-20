@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_07_142614) do
+ActiveRecord::Schema.define(version: 2019_08_07_135747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,6 +102,24 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
     t.string "name"
   end
 
+  create_table "employee_types", force: :cascade do |t|
+    t.string "position"
+    t.boolean "allow_override"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "employees", force: :cascade do |t|
+    t.bigint "employee_type_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "job_title"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employee_type_id"], name: "index_employees_on_employee_type_id"
+  end
+
   create_table "foods", force: :cascade do |t|
     t.string "name"
   end
@@ -179,6 +197,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
     t.boolean "agreed_terms"
     t.date "agreed_date"
     t.text "notes"
+    t.text "online_access_code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["primary_phone_type_id"], name: "index_owners_on_primary_phone_type_id"
@@ -360,24 +379,14 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_types", force: :cascade do |t|
-    t.string "position"
-    t.boolean "allow_override"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "users", force: :cascade do |t|
-    t.bigint "user_type_id"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "job_title"
-    t.string "email"
+    t.string "person_type"
+    t.bigint "person_id"
     t.string "username"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_type_id"], name: "index_users_on_user_type_id"
+    t.index ["person_type", "person_id"], name: "index_users_on_person_type_and_person_id"
   end
 
   create_table "validities", force: :cascade do |t|
@@ -399,6 +408,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   add_foreign_key "booking_pet_special_needs", "special_needs"
   add_foreign_key "bookings", "booking_statuses"
   add_foreign_key "bookings", "owners"
+  add_foreign_key "employees", "employee_types"
   add_foreign_key "immunisations", "pet_types"
   add_foreign_key "owner_concerns", "concerns", column: "concerns_id"
   add_foreign_key "owner_concerns", "owners"
@@ -436,5 +446,4 @@ ActiveRecord::Schema.define(version: 2019_08_07_142614) do
   add_foreign_key "pets", "sexes"
   add_foreign_key "pets", "sizes"
   add_foreign_key "rates", "pen_types"
-  add_foreign_key "users", "user_types"
 end
