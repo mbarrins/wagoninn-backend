@@ -23,6 +23,20 @@ employee = {
 
 Employee.find_or_create_by(employee)
 
+users = [
+  {
+    username: 'user1',
+    password: 'password',
+    person: Employee.first
+  }
+]
+
+users.each do |user|
+  check_user_exists = User.find_by(username: user[:username])
+  User.create(user) if !check_user_exists
+end
+
+
 color = ['Black', 'White', 'Orange', 'Grey', 'Calico']
 color.each{|color| Color.find_or_create_by(name: color)}
 
@@ -190,81 +204,41 @@ pens.each{|pen| Pen.find_or_create_by(pen)}
 
 Faker::Config.locale = 'en-US'
 
-75.times do 
-  agreed = rand(100) > 30
-  address_lines = rand(3) + 1
+def create_owners_pets_bookings(date_from:, date_to:, owners:, pets:, bookings:)
 
-  Owner.create({
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
-    email: Faker::Internet.email,
-    primary_phone: Faker::PhoneNumber.phone_number,
-    primary_phone_type_id: PhoneType.all.sample.id, 
-    secondary_phone: Faker::PhoneNumber.phone_number,
-    secondary_phone_type_id: PhoneType.all.sample.id, 
-    address_line_1: address_lines > 1 ? Faker::Address.secondary_address : Faker::Address.street_address,
-    address_line_2: address_lines == 3 ? Faker::Address.community : address_lines == 2 ? Faker::Address.street_address : nil,
-    address_line_3: address_lines == 3 ? Faker::Address.street_address : nil,
-    city: Faker::Address.city,
-    state: Faker::Address.state_abbr,
-    zipcode: Faker::Address.zip_code,
-    emergency_contact_name: Faker::Name.name,
-    emergency_contact_phone: Faker::PhoneNumber.phone_number,
-    partner_name: Faker::Name.name,
-    partner_phone: Faker::PhoneNumber.phone_number,
-    agreed_terms: agreed,
-    agreed_date: agreed ? Faker::Date.birthday(0, 3) : nil
-  })
-end
+  owners.times do 
+    agreed = rand(100) > 30
+    address_lines = rand(3) + 1
 
-users = [
-  {
-    username: 'user1',
-    password: 'password',
-    person: Employee.first
-  },
-  {
-    username: 'owner1',
-    password: 'password',
-    person: Owner.all.sample
-  }
-]
+    Owner.create({
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      email: Faker::Internet.email,
+      primary_phone: Faker::PhoneNumber.phone_number,
+      primary_phone_type_id: PhoneType.all.sample.id, 
+      secondary_phone: Faker::PhoneNumber.phone_number,
+      secondary_phone_type_id: PhoneType.all.sample.id, 
+      address_line_1: address_lines > 1 ? Faker::Address.secondary_address : Faker::Address.street_address,
+      address_line_2: address_lines == 3 ? Faker::Address.community : address_lines == 2 ? Faker::Address.street_address : nil,
+      address_line_3: address_lines == 3 ? Faker::Address.street_address : nil,
+      city: Faker::Address.city,
+      state: Faker::Address.state_abbr,
+      zipcode: Faker::Address.zip_code,
+      emergency_contact_name: Faker::Name.name,
+      emergency_contact_phone: Faker::PhoneNumber.phone_number,
+      partner_name: Faker::Name.name,
+      partner_phone: Faker::PhoneNumber.phone_number,
+      agreed_terms: agreed,
+      agreed_date: agreed ? Faker::Date.birthday(0, 3) : nil
+    })
+  end
 
-users.each do |user|
-  check_user_exists = User.find_by(username: user[:username])
-  User.create(user) if !check_user_exists
-end
+  pets.times do 
+    dog = rand(100) > 20
+    spayed_neutered = rand(100) > 20
 
-200.times do 
-  dog = rand(100) > 20
-  spayed_neutered = rand(100) > 20
-
-  Pet.create(
-    { owner_id: Owner.all.sample.id,
-      pet_type_id: dog ? PetType.find_by(name: 'Dog').id : PetType.find_by(name: 'Cat').id,
-      name: dog ? Faker::Creature::Dog.name : Faker::Creature::Cat.name,
-      dob: Faker::Date.birthday(0, 10) ,
-      sex_id: Sex.all.sample.id,
-      color_id: dog ? nil : Color.all.sample.id,
-      size_id: Size.all.sample.id,
-      breed_id: dog ? Breed.all.sample.id : nil,
-      spayed_neutered: spayed_neutered,
-      notes: '',
-      special_needs_fee: false,
-      no_return: false,
-      inactive: false
-    }
-  )
-end
-
-Owner.select{|owner| owner.pets.length == 0}.each do |owner|
-  dog = rand(100) > 20
-  spayed_neutered = rand(100) > 20
-  pets = rand(5)
-
-  pets.times do
     Pet.create(
-      { owner_id: owner.id,
+      { owner_id: Owner.all.sample.id,
         pet_type_id: dog ? PetType.find_by(name: 'Dog').id : PetType.find_by(name: 'Cat').id,
         name: dog ? Faker::Creature::Dog.name : Faker::Creature::Cat.name,
         dob: Faker::Date.birthday(0, 10) ,
@@ -280,87 +254,121 @@ Owner.select{|owner| owner.pets.length == 0}.each do |owner|
       }
     )
   end
-end
 
-300.times do 
-  owner = Owner.all.sample
-  dogs = owner.pets.select{|pet| pet.pet_type.name === 'Dog'}
-  dog_pens = (dogs.length / 2) + (dogs.length % 2)
-  dog_rates = dog_rates = ([2] * (dogs.length/2)) + ([1] * (dogs.length % 2))
-  cats = owner.pets.select{|pet| pet.pet_type.name === 'Cat'}
-  cat_pens = (cats.length / 2) + (cats.length % 2)
-  cat_rates = cat_rates = ([5] * (cats.length/2)) + ([4] * (cats.length % 2))
+  Owner.select{|owner| owner.pets.length == 0}.each do |owner|
+    dog = rand(100) > 20
+    spayed_neutered = rand(100) > 20
+    pets = rand(5)
 
-  booking = true
-  
-  while booking 
-    check_in_date = rand(Date.new(2018,12,1)..Date.new(2019,10,31))
-    check_out_date = check_in_date + [2,3,4,5,6,7,8,9,10,11,12,13,14].sample
+    pet_type_id = dog ? PetType.find_by(name: 'Dog').id : PetType.find_by(name: 'Cat').id
+    immunisations = Immunisation.select{|shot| shot.pet_type_id == pet_type_id}
 
-    booking = Booking.find_by({
-      owner_id: owner.id, 
-      check_in: check_in_date,
-      check_out: check_out_date
-    })
-  end
+    pets.times do
+      pet = Pet.create(
+        { owner_id: owner.id,
+          pet_type_id: pet_type_id,
+          name: dog ? Faker::Creature::Dog.name : Faker::Creature::Cat.name,
+          dob: Faker::Date.birthday(0, 10) ,
+          sex_id: Sex.all.sample.id,
+          color_id: dog ? nil : Color.all.sample.id,
+          size_id: Size.all.sample.id,
+          breed_id: dog ? Breed.all.sample.id : nil,
+          spayed_neutered: spayed_neutered,
+          notes: '',
+          special_needs_fee: false,
+          no_return: false,
+          inactive: false
+        }
+      )
 
-  booking_status =  if check_out_date < Date.today
-    BookingStatus.find_by(name: 'Completed')
-  elsif check_in_date < Date.today
-    BookingStatus.find_by(name: 'Active')
-  else
-    BookingStatus.find_by(name: 'Reservation')
-  end
-
-  booking = Booking.create(
-    {
-      owner_id: owner.id, 
-      check_in: check_in_date, 
-      check_in_time: ['AM','PM'].sample, 
-      check_out: check_out_date, 
-      check_out_time: ['AM','PM'].sample, 
-      booking_status: booking_status
-    }
-  )
-  
-  dog_rates.each_with_index do |rate, index|
-    booking_pen = BookingPen.create({
-      booking: booking, 
-      pen_type: PenType.find_by(name: 'Dog Run'),
-      pen_id: booking.check_in < Date.today ? BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Dog Run').id).sample : nil,
-      rate_id: rate
-    })
-
-    count = 0
-    rate.times do
-      BookingPenPet.create({
-        booking_pen: booking_pen,
-        pet: dogs[count + (index*2)],
-        special_needs_fee: false
-      })
-      count += 1
+      immunisations.each do |shot|
+        PetImmunisation.create({pet: pet, immunisation_id: shot.id})
+      end
     end
   end
 
-  cat_rates.each_with_index do |rate, index|
-    booking_pen = BookingPen.create({
-      booking: booking, 
-      pen_type: PenType.find_by(name: 'Cat Room'),
-      pen_id:  BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Cat Room').id).sample,
-      rate_id: rate
-    })
+  bookings.times do 
+    owner = Owner.all.sample
+    dogs = owner.pets.select{|pet| pet.pet_type.name === 'Dog'}
+    dog_pens = (dogs.length / 2) + (dogs.length % 2)
+    dog_rates = dog_rates = ([2] * (dogs.length/2)) + ([1] * (dogs.length % 2))
+    cats = owner.pets.select{|pet| pet.pet_type.name === 'Cat'}
+    cat_pens = (cats.length / 2) + (cats.length % 2)
+    cat_rates = cat_rates = ([5] * (cats.length/2)) + ([4] * (cats.length % 2))
 
-    count = 0
-    (rate == 5 ? 2 : 1).times do
-      BookingPenPet.create({
-        booking_pen: booking_pen,
-        pet: cats[count + (index*2)],
-        special_needs_fee: false
+    booking = true
+    
+    while booking 
+      check_in_date = rand(date_from.to_date..date_to.to_date)
+      check_out_date = check_in_date + [2,3,4,5,6,7,8,9,10,11,12,13,14].sample
+
+      booking = Booking.find_by({
+        owner_id: owner.id, 
+        check_in: check_in_date,
+        check_out: check_out_date
       })
-      count += 1
+    end
+
+    booking_status =  if check_out_date < Date.today
+      BookingStatus.find_by(name: 'Completed')
+    elsif check_in_date < Date.today
+      BookingStatus.find_by(name: 'Active')
+    else
+      BookingStatus.find_by(name: 'Reservation')
+    end
+
+    booking = Booking.create(
+      {
+        owner_id: owner.id, 
+        check_in: check_in_date, 
+        check_in_time: ['AM','PM'].sample, 
+        check_out: check_out_date, 
+        check_out_time: ['AM','PM'].sample, 
+        booking_status: booking_status
+      }
+    )
+    
+    dog_rates.each_with_index do |rate, index|
+      booking_pen = BookingPen.create({
+        booking: booking, 
+        pen_type: PenType.find_by(name: 'Dog Run'),
+        pen_id: booking.check_in < Date.today ? BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Dog Run').id).sample : nil,
+        rate_id: rate
+      })
+
+      count = 0
+      rate.times do
+        BookingPenPet.create({
+          booking_pen: booking_pen,
+          pet: dogs[count + (index*2)],
+          special_needs_fee: false
+        })
+        count += 1
+      end
+    end
+
+    cat_rates.each_with_index do |rate, index|
+      booking_pen = BookingPen.create({
+        booking: booking, 
+        pen_type: PenType.find_by(name: 'Cat Room'),
+        pen_id:  BookingPen.available_all(check_in: booking.check_in, check_out: booking.check_out, pen_type_id: PenType.find_by(name: 'Cat Room').id).sample,
+        rate_id: rate
+      })
+
+      count = 0
+      (rate == 5 ? 2 : 1).times do
+        BookingPenPet.create({
+          booking_pen: booking_pen,
+          pet: cats[count + (index*2)],
+          special_needs_fee: false
+        })
+        count += 1
+      end
     end
   end
 end
 
-  
+create_owners_pets_bookings(date_from: '2016-12-01', date_to: '2017-12-31', owners: 75, pets: 200, bookings: 300)
+create_owners_pets_bookings(date_from: '2017-12-01', date_to: '2018-12-31', owners: 100, pets: 250, bookings: 425)
+create_owners_pets_bookings(date_from: '2018-12-01', date_to: '2019-12-31', owners: 150, pets: 400, bookings: 600)
 
