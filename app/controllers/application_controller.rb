@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
-  before_action :set_current_user, except: [:fallback_index_html]
-  before_action :authorize, except: [:fallback_index_html]
+  before_action :set_current_user
+  before_action :authorize
 
   def issue_token(payload)
       JWT.encode(payload, ENV['RAILS_SECRET'])
@@ -37,10 +37,6 @@ class ApplicationController < ActionController::API
       if !logged_in
           return render json: { error: 'you must be logged in'}, status: :unauthorized
       end
-  end
-
-  def fallback_index_html
-    render :file => 'public/index.html' 
   end
   
 end
