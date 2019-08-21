@@ -19,7 +19,7 @@ class Pet < ApplicationRecord
   
   def self.create_with_all(pet:, immunisations:, foods:, health_details:, special_needs:, medications:, sociabilities:, issues:)
     
-    pet = Pet.find_or_create_by(pet)
+    pet = Pet.create(pet)
     
     if pet.valid?
       
@@ -34,7 +34,7 @@ class Pet < ApplicationRecord
       end
 
       foods.each do |food|
-        PetFood.find_or_create_by({
+        PetFood.create({
           pet: pet, 
           food_id: food[:food_id], 
           quantity: food[:quantity], 
@@ -44,7 +44,7 @@ class Pet < ApplicationRecord
       end
 
       health_details.each do |health_detail|
-        PetHealthDetail.find_or_create_by({
+        PetHealthDetail.create({
           pet: pet, 
           health_detail_id: health_detail[:health_detail_id], 
           inactive: health_detail[:inactive]
@@ -52,7 +52,7 @@ class Pet < ApplicationRecord
       end
 
       special_needs.each do |special_need|
-        PetSpecialNeed.find_or_create_by({
+        PetSpecialNeed.create({
           pet: pet, 
           special_need_id: special_need[:special_need_id], 
           inactive: special_need[:inactive]
@@ -60,7 +60,7 @@ class Pet < ApplicationRecord
       end
 
       medications.each do |medication|
-        PetMedication.find_or_create_by({
+        PetMedication.create({
           pet: pet, 
           medication_id: medication[:medication_id], 
           dose_quantity: medication[:dose_quantity], 
@@ -70,7 +70,7 @@ class Pet < ApplicationRecord
       end
 
       sociabilities.each do |sociability|
-        PetSociability.find_or_create_by({
+        PetSociability.create({
           pet: pet, 
           sociability_id: sociability[:sociability_id], 
           inactive: sociability[:inactive]
@@ -78,7 +78,7 @@ class Pet < ApplicationRecord
       end
 
       issues.each do |issue|
-        PetIssue.find_or_create_by({
+        PetIssue.create({
           pet: pet, 
           issue_id: issue[:issue_id], 
           inactive: issue[:inactive]
@@ -147,9 +147,9 @@ class Pet < ApplicationRecord
             id: shot.id, 
             pet_id: shot.pet_id, 
             immunisation_id: shot.immunisation_id, 
-            validity_id: shot.validity_id,
-            effective_date: shot.effective_date,
-            expiry_date: shot.expiry_date
+            validity_id: shot.validity_id || '',
+            effective_date: shot.effective_date || '',
+            expiry_date: shot.expiry_date || ''
           }
         end,
         issues: self.pet_issues,
