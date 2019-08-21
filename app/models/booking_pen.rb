@@ -43,11 +43,30 @@ class BookingPen < ApplicationRecord
       check_in_time: self.booking.check_in_time,
       check_out: self.booking.check_out,
       check_out_time: self.booking.check_out_time,
+      owner_id: self.booking.owner.id,
       owner_name: self.booking.owner.name,
       status: self.booking.booking_status.name,
       pen: self.pen ? self.pen.name : '',
       pen_no: self.pen ? self.pen.no : '',
-      pet_listing: self.booking_pen_pets.map{|pet| pet.pet.name}.to_sentence
+      pet_listing: self.booking_pen_pets.map{|pet| pet.pet.name}.to_sentence,
+      pens: self.booking.booking_pens.sort_by{|pen| pen.id}.map{|pen| {
+        id: pen.id,
+        pen_id: pen.pen_id ? pen.pen_id : '',
+        pen_type: pen.pen_type.name, 
+        pet_type: pen.pen_type.pet_type.name, 
+        pets: pen.booking_pen_pets.sort_by{|pet| pet.id}.map{|pet| pet.pet.name}.to_sentence,
+        pets_detail: pen.booking_pen_pets.sort{|pet| pet.id}.map{|pet| pet.pet.pet_type.name == 'Dog' ? {
+          id: pet.pet.id, 
+          name: pet.pet.name, 
+          breed: pet.pet.breed.name,
+          size: pet.pet.size.name
+        } : {
+          id: pet.pet.id, 
+          name: pet.pet.name, 
+          color: pet.pet.color.name, 
+          size: pet.pet.size.name
+        }}
+      }},
     }
   end
 

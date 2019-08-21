@@ -184,6 +184,7 @@ class Booking < ApplicationRecord
       check_in_time: self.check_in_time,
       check_out: self.check_out,
       check_out_time: self.check_out_time,
+      owner_id: self.owner.id,
       owner_name: self.owner.name,
       status: self.booking_status.name,
       pens: self.booking_pens.sort_by{|pen| pen.id}.map{|pen| {
