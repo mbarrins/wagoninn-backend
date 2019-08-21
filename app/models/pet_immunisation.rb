@@ -1,7 +1,7 @@
 class PetImmunisation < ApplicationRecord
   belongs_to :pet
   belongs_to :immunisation
-  belongs_to :validity
+  belongs_to :validity, optional: true
 
   def self.update_with_pet(pet:, immunisations:)
     remove_immunisation_ids = pet.pet_immunisations.map{|immunisation| immunisation.id} - immunisations.map{|immunisation| immunisation[:id]}
