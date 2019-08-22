@@ -12,6 +12,7 @@ class Pet < ApplicationRecord
   has_many :pet_medications
   has_many :pet_sociabilities
   has_many :pet_special_needs
+  has_many :booking_pen_pets
 
   def as_json(options={})
     super(options).map{|k,v| [k, v === nil ? '' : v]}.to_h
