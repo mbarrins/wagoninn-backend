@@ -370,5 +370,5 @@ end
 
 create_owners_pets_bookings(date_from: '2016-12-01', date_to: '2017-12-31', owners: 75, pets: 200, bookings: 300)
 create_owners_pets_bookings(date_from: '2017-12-01', date_to: '2018-12-31', owners: 100, pets: 250, bookings: 425)
-create_owners_pets_bookings(date_from: '2018-12-01', date_to: '2019-12-31', owners: 150, pets: 400, bookings: 600)
+create_owners_pets_bookings(date_from: '2018-12-01', date_to: '2019-12-31', owners: 150, pets: 300, bookings: 500)
 
